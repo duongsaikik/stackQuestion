@@ -314,3 +314,37 @@ exports.validateUser = [
     .isLength({ max: 50 })
     .withMessage('must be at most 50 characters long')
 ];
+exports.editUser = async (req, res, next) => {
+  try {
+    let user = await User.findOne({ username: req.params.username });
+    user.role = req.body.role;
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ username: req.params.username });
+    await User.deleteOne({ _id: user._id });
+    res.json('Delete User Successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+exports.getUsersOfCurrentPage = async (req, res) => {
+  const PAGE_SIZE = 5;
+  const page = parseInt(req.query.page || '0');
+  const sort = req.query.sort || '';
+  try {
+    const total = await User.countDocuments({});
+    const users = await User.find()
+      .sort(sort)
+      .limit(PAGE_SIZE)
+      .skip(PAGE_SIZE * page);
+    res.status(200).json({ totalPages: Math.ceil(total / PAGE_SIZE), users });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};

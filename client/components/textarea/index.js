@@ -9,11 +9,12 @@ const TextArea = ({
   /*  hasError,
    errorMessage, */
    label,
+   value,
    inputInfo,
    errorMessage,
   ...props
 }) => {
-  
+  console.log(value + " s")
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false)
   const { CKEditor, ClassicEditor } = editorRef.current || {}
@@ -26,6 +27,8 @@ const TextArea = ({
     setEditorLoaded(true)
 
   }, []);
+
+
 
   return (
     <div className={styles.container}>
@@ -53,6 +56,7 @@ const TextArea = ({
             );
           });
         }}
+        value={value}
         {...props}
       />
       </>

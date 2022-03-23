@@ -27,6 +27,7 @@ const QuestionDetail = ({ questionId, title }) => {
       setQuestion(data);
       setIdOwner(data.author.id);
       setCheckQt(data.check)
+     
     
     }
     fetchQuestion()
@@ -113,9 +114,9 @@ const QuestionDetail = ({ questionId, title }) => {
                       votes={answer.votes}
                       answerId={answer.id}
                       questionId={questionId}
-                      setQuestion={setQuestion}                    
+                      setQuestion={setQuestion}                   
                       checkAnswer={answer.check}
-                      check={checkQt}
+                      check={question.check}
                       id={idOwner}
                     />
                     <PostSummary

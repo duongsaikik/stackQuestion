@@ -25,8 +25,7 @@ const AddAnswer = ({ id, tags, setQuestion }) => {
 
 const handleChangeCM =(event, editor)  =>{ 
     const data = editor.getData()   
-    setComment(data)
-   
+    setComment(data) 
 }
 const handleSubmit = async (e) =>{
   e.preventDefault();
@@ -34,6 +33,7 @@ const handleSubmit = async (e) =>{
     setStatus("Nội dung không được trống")
   }else{
     const { data } = await authAxios.post(`/answer/${id}`, {text:comment})
+    setComment('');
     setQuestion(data)
   }
 }
@@ -44,7 +44,7 @@ const handleSubmit = async (e) =>{
           <h2>Your answer</h2>
            <TextArea                 
              onChange={handleChangeCM}                 
-              
+              value={comment}
           /> 
            
           <p className={styles.status}>{status}</p>

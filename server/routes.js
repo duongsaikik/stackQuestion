@@ -6,7 +6,10 @@ const {
   search,
   find,
   sendMail,
-  upDatePassword
+  upDatePassword,
+  deleteUser,
+  editUser,
+  getUsersOfCurrentPage
 } = require('./controllers/users');
 const {
   loadQuestions,
@@ -48,6 +51,11 @@ router.get('/user/find', find);
 router.post('/user/sendEmail',sendMail);
 router.put('/user/upDatePass',upDatePassword);
 
+//users in admin
+router.get('/user?', getUsersOfCurrentPage);
+router.post('/user/addUser', signup);
+router.post('/user/:username', editUser);
+router.delete('/user/deleteUser/:username', deleteUser);
 
 
 //questions

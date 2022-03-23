@@ -78,6 +78,9 @@ questionSchema.methods = {
 
   removeAnswer: function (id) {
     const answer = this.answers.id(id);
+    if(answer.check === true){
+      this.check = false;
+    }
     if (!answer) throw new Error('Answer not found');
     answer.remove();
     return this.save();

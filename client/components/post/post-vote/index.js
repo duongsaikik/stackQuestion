@@ -22,9 +22,7 @@ const PostVote = ({
   const { authState, isAuthenticated } = useContext(AuthContext)
   const { authAxios } = useContext(FetchContext)
   const { handleComponentVisible } = useContext(ModalContext)
-
-  console.log(check)
-
+   
   const exists = () => {
     if (votes.find((v) => v.user === authState.userInfo?.id)) {
       return true;
@@ -59,6 +57,7 @@ const PostVote = ({
       `/votes/unvote/${questionId}/${answerId ? answerId : ''}`
     )
     setQuestion(data)
+  
   }
 
   const checkVote = async () => {
@@ -100,13 +99,7 @@ const PostVote = ({
         id === authState.userInfo.id
           ? check
             ? checkAnswer
-              ? <Button className={cn(styles.voteButton,styles.situation)}
-                onClick={() => {
-                  isAuthenticated() ?
-                    checkVote()
-                    : handleComponentVisible(true, 'login')
-                }}
-              >
+              ? <Button className={cn(styles.voteButton,styles.situation)}>
                 <CheckIcon className={styles.checkVote} />
               </Button>
               : ''

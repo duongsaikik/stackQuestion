@@ -33,6 +33,7 @@ const PostSummary = ({
       )
 
       if (answerId) {
+        console.log(data)
         setQuestion(data)
       } else {
         router.push('/')
