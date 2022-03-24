@@ -261,3 +261,18 @@ exports.questionValidate = [
 
   body('tags').exists().withMessage('is required')
 ];
+exports.getQuestionsOfCurrentPage = async (req, res) => {
+  const PAGE_SIZE = 5;
+  const page = parseInt(req.query.page || '0');
+  const sort = req.query.sort || '';
+  try {
+    const total = await Question.countDocuments({});
+    const questions = await Question.find()
+      .sort(sort)
+      .limit(PAGE_SIZE)
+      .skip(PAGE_SIZE * page);
+    res.status(200).json({ totalPages: Math.ceil(total / PAGE_SIZE), questions });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};

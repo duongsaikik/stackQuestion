@@ -67,7 +67,8 @@ router.get('/questions/:tags', listByTags);
 router.get('/question/user/:username', listByUser);
 router.delete('/question/:question', [requireAuth, questionAuth], removeQuestion);
 router.get('/question/find/:keyWord',findQuestion);
-
+//questions in admin
+router.get('/questions?', getQuestionsOfCurrentPage);
 //tags
 router.get('/tags/populertags', listPopulerTags);
 router.get('/tags/:tag', searchTags);
@@ -77,7 +78,9 @@ router.get('/tags', listTags);
 router.param('answer', loadAnswers);
 router.post('/answer/:question', [requireAuth, answerValidate], createAnswer);
 router.delete('/answer/:question/:answer', [requireAuth, answerAuth], removeAnswer);
-
+//answers in admin
+router.get('/allAnswers/:question', getAllAnswers);
+router.get('/answers/:question?', getAnswersOfCurrentPage);
 //votes
 router.get('/votes/upvote/:question/:answer?', requireAuth, upvote);
 router.get('/votes/downvote/:question/:answer?', requireAuth, downvote);
@@ -89,7 +92,11 @@ router.param('comment', loadComments);
 router.post('/comment/:question/:answer?', [requireAuth, validate], createComment);
 router.delete('/comment/:question/:comment', [requireAuth, commentAuth], removeComment);
 router.delete('/comment/:question/:answer/:comment', [requireAuth, commentAuth], removeComment);
-
+//comments in admin
+router.get('/allComments/:question', getAllComments);
+router.get('/allComments/:question/:answer', getAllComments);
+router.get('/comments/:question?', getCommentsOfCurrentPage);
+router.get('/comments/:question/:answer/?', getCommentsOfCurrentPage);
 module.exports = (app) => {
   app.use('/api', router);
 

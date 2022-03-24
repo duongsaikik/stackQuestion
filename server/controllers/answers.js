@@ -1,5 +1,6 @@
 const { body, validationResult } = require('express-validator');
-
+const Question = require('../models/question');
+const lodash = require('lodash');
 exports.loadAnswers = async (req, res, next, id) => {
   try {
     const answer = await req.question.answers.id(id);
@@ -59,3 +60,27 @@ exports.answerValidate = [
     .isLength({ max: 30000 })
     .withMessage('must be at most 30000 characters long')
 ];
+exports.getAllAnswers = async (req, res, next) => {
+  try {
+    const question = await Question.findById(req.params.question);
+    const answers = question.answers;
+    res.json(answers);
+  } catch (error) {
+    next(error);
+  }
+};
+exports.getAnswersOfCurrentPage = async (req, res) => {
+  const PAGE_SIZE = 5;
+  const page = parseInt(req.query.page || '0');
+  const sort = req.query.sort || '';
+  try {
+    const question = await Question.findById(req.params.question);
+    const allAnswers = question.answers;
+    const total = allAnswers.length;
+
+    const answers = lodash.sortBy(allAnswers, [sort]).slice(PAGE_SIZE * page, PAGE_SIZE);
+    res.status(200).json({ totalPages: Math.ceil(total / PAGE_SIZE), answers });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};

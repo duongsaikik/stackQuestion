@@ -4,7 +4,8 @@ const nodeMailer = require("nodemailer");
 const { body, validationResult } = require('express-validator');
 
 const { createToken, hashPassword, verifyPassword } = require('../utils/authentication');
-
+const fullTextSearch = require('fulltextsearch');
+var fullTextSearchVi = fullTextSearch.vi;
 
 const getPagination = (page, size, data) => {
   const start = page ? + (page - 1) * size : 0;
@@ -66,37 +67,72 @@ exports.signup = async (req, res) => {
   }
 
   try {
-    const { username, email } = req.body;
-    const hashedPassword = await hashPassword(req.body.password);
+    const { username } = req.body;
 
     const userData = {
-      email: email,
-      username: username.toLowerCase(),
-      password: hashedPassword,
-      email: email
+      username: username.toLowerCase()
     };
-    const existingEmail = await User.findOne({
-      email: userData.email
-    });
+
     const existingUsername = await User.findOne({
       username: userData.username
     });
-
-    if (existingEmail) {
-      return res.status(400).json({
-        message: 'Email already exists.'
-      });
-    }
 
     if (existingUsername) {
       return res.status(400).json({
         message: 'Username already exists.'
       });
-    }else if(existingEmail){
-      return res.status(400).json({
-        message: 'Email already exists.'
-      });
     }
+    if (req.body.email) {
+      const existingEmail = await User.findOne({
+        email: req.body.email
+      });
+      if (existingEmail) {
+        return res.status(400).json({
+          message: 'Email already exists.'
+        });
+      } else {
+        userData.email = req.body.email;
+      }
+    }
+    if (req.body.role) userData.role = req.body.role;
+    if (req.body.password) {
+      const hashedPassword = await hashPassword(req.body.password);
+      userData.password = hashedPassword;
+    } else {
+      const hashedPassword = await hashPassword('abc@123');
+      userData.password = hashedPassword;
+    }
+    // const { username, email } = req.body;
+    // const hashedPassword = await hashPassword(req.body.password);
+
+    // const userData = {
+    //   email: email,
+    //   username: username.toLowerCase(),
+    //   password: hashedPassword,
+    //   email: email
+    // };
+    // const existingEmail = await User.findOne({
+    //   email: userData.email
+    // });
+    // const existingUsername = await User.findOne({
+    //   username: userData.username
+    // });
+
+    // if (existingEmail) {
+    //   return res.status(400).json({
+    //     message: 'Email already exists.'
+    //   });
+    // }
+
+    // if (existingUsername) {
+    //   return res.status(400).json({
+    //     message: 'Username already exists.'
+    //   });
+    // }else if(existingEmail){
+    //   return res.status(400).json({
+    //     message: 'Email already exists.'
+    //   });
+    // }
 
     const newUser = new User(userData);
     const savedUser = await newUser.save();
@@ -337,12 +373,25 @@ exports.getUsersOfCurrentPage = async (req, res) => {
   const PAGE_SIZE = 5;
   const page = parseInt(req.query.page || '0');
   const sort = req.query.sort || '';
+  var filterUsername = {};
+  var filterEmail = {};
   try {
-    const total = await User.countDocuments({});
-    const users = await User.find()
+    if (req.query.search) {
+      const search = req.query.search;
+      filterUsername.username = new RegExp(fullTextSearchVi(search), 'i');
+      filterEmail.email = new RegExp(fullTextSearchVi(search), 'i');
+    } 
+    var users = await User.find({ $or: [filterUsername, filterEmail] });
+    const total = users.length;
+    // while(Math.ceil(total / PAGE_SIZE)<=page){
+    //   page--;
+    // }
+    console.log(page);
+    users = await User.find({ $or: [filterUsername, filterEmail] })
       .sort(sort)
       .limit(PAGE_SIZE)
       .skip(PAGE_SIZE * page);
+
     res.status(200).json({ totalPages: Math.ceil(total / PAGE_SIZE), users });
   } catch (error) {
     res.status(404).json({ message: error.message });

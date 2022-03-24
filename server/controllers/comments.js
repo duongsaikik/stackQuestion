@@ -1,5 +1,6 @@
 const { body, validationResult } = require('express-validator');
-
+const Question = require('../models/question');
+const lodash = require('lodash');
 exports.loadComments = async (req, res, next, id) => {
   try {
     let comment;
@@ -73,3 +74,38 @@ exports.validate = [
     .isLength({ max: 1000 })
     .withMessage('must be at most 1000 characters long')
 ];
+exports.getAllComments = async (req, res, next) => {
+  try {
+    const question = await Question.findById(req.params.question);
+    var comments;
+    if (req.params.answer) {
+      comments = question.answers.find((answer) => (answer.id = req.params.answer));
+    } else {
+      comments = question.comments;
+    }
+    res.json(comments);
+  } catch (error) {
+    next(error);
+  }
+};
+exports.getCommentsOfCurrentPage = async (req, res) => {
+  const PAGE_SIZE = 5;
+  const page = parseInt(req.query.page || '0');
+  const sort = req.query.sort || '';
+  try {
+    const question = await Question.findById(req.params.question);
+    var allComments;
+    if (req.params.answer) {
+      allComments = question.answers.find((answer) => (answer.id = req.params.answer)).comments;
+    } else {
+      allComments = question.comments;
+    }
+    const total = allComments.length;
+
+    const comments = lodash.sortBy(allComments, [sort]).slice(PAGE_SIZE * page, PAGE_SIZE);
+    res.status(200).json({ totalPages: Math.ceil(total / PAGE_SIZE), comments });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
