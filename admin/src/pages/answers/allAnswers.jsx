@@ -1,16 +1,28 @@
 import { useState, useEffect, useContext } from "react";
 import moment from "moment";
-import { Button, makeStyles } from "@material-ui/core";
+import {makeStyles } from "@material-ui/core";
 import { getAllAnswers, getAnswersOfPage } from "../../controllers/answers";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../App.css";
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
+import { Button } from '@mui/material'
+
 import { faSortUp } from "@fortawesome/free-solid-svg-icons";
 import { faSortDown } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FetchContext } from "../../context/fetch";
+import slug from 'slug';
+
+
 const useStyles = makeStyles({
   table: {
     width: "90%",
@@ -37,6 +49,12 @@ const AllAnswers = () => {
   const { authAxios } = useContext(FetchContext);
   const usersUrl = "http://localhost:8080/api";
   const { question } = useParams();
+  const questionId = question.split('-').shift()
+  const title = question
+    ?.substr(question.indexOf('-') + 1)
+    .split('-')
+    .join(' ')
+  console.log(useParams())
   const classes = useStyles();
   const [answersOfPage, setAnswersOfPage] = useState([]);
   const [allAnswers, setAllAnswers] = useState([]);
@@ -44,6 +62,26 @@ const AllAnswers = () => {
   const [query, setQuery] = useState({ pageNumber: 0, sort: "" });
   const [totalPages, setTotalPages] = useState([]);
   const pages = new Array(totalPages).fill(null).map((v, i) => i);
+  const qt_content = {
+    display: '-webkit-box',
+    wordBreak: 'break-word',
+    whiteSpace: 'pre-wrap',
+    overflow: 'hidden',
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: 'vertical',
+    textAlign : 'left'
+   
+  }
+  const qt_title = { 
+    wordBreak: 'break-word',
+    whiteSpace: 'pre-wrap',
+    overflow: 'hidden',
+    WebkitLineClamp: 1,
+    WebkitBoxOrient: 'vertical',
+    textAlign : 'left'
+   
+  }
+ 
   const previous = () => {
     setQuery({
       pageNumber: Math.max(0, query.pageNumber - 1),
@@ -68,12 +106,12 @@ const AllAnswers = () => {
     return "page-item " + (query.pageNumber === pageNumber ? "active" : "");
   };
   useEffect(() => {
-    getAllAnswers(question).then((res) => {
+    getAllAnswers(questionId).then((res) => {
       setAllAnswers(res.data);
     });
   }, []);
   useEffect(() => {
-    getAnswersOfPage(question, query.pageNumber, query.sort).then((res) => {
+    getAnswersOfPage(questionId, query.pageNumber, query.sort).then((res) => {
       setAnswersOfPage(res.data.answers);
       setTotalPages(res.data.totalPages);
     });
@@ -98,10 +136,10 @@ const AllAnswers = () => {
   const deleteAnswerFunction = async (answer) => {
     window.confirm("Are you sure about that?");
     //await DeleteAnswer(question, answer);
-    await authAxios.delete(`${usersUrl}/answer/${question}/${answer}`);
+    await authAxios.delete(`${usersUrl}/answer/${questionId}/${answer}`);
     alert("Xóa thành công!!!");
-    getAllAnswers(question).then((res) => setAllAnswers(res.data));
-    getAnswersOfPage(question, query.pageNumber, query.sort).then((res) => {
+    getAllAnswers(questionId).then((res) => setAllAnswers(res.data));
+    getAnswersOfPage(questionId, query.pageNumber, query.sort).then((res) => {
       setAnswersOfPage(res.data.answers);
       setTotalPages(res.data.totalPages);
     });
@@ -109,6 +147,7 @@ const AllAnswers = () => {
   const truncate = (str, n) => {
     return str.length > n ? str.substr(0, n - 1) + " (...)" : str;
   };
+  console.log(answersOfPage)
   return (
     <div className="App">
       <h1>ANSWERS MANAGEMENT</h1>
@@ -126,14 +165,18 @@ const AllAnswers = () => {
           <FontAwesomeIcon icon={faSearch} />
         </button>
       </form>
-      <div class="table-responsive-xxl">
-        <table class="table table-sm table-bordered table-striped">
-          <thead class="table-dark">
-            <tr className={classes.thead}>
-              <th style={{ width: "5%" }}>No.</th>
-              <th style={{ width: "15%" }}>
-                Author{" "}
-                <div class="btn-group-vertical">
+      <TableContainer component={Paper}>
+        
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+            <TableCell align="center">
+              No. 
+            
+              </TableCell>
+              <TableCell align="center">
+              Author 
+              <div class="btn-group-vertical">
                   <button
                     class="sort"
                     onClick={() =>
@@ -160,9 +203,9 @@ const AllAnswers = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th>
-                Text{" "}
+                </TableCell>
+              <TableCell align="center">
+                Text
                 <div class="btn-group-vertical">
                   <button
                     class="sort"
@@ -190,9 +233,9 @@ const AllAnswers = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th style={{ width: "7%" }}>
-                Votes{" "}
+                </TableCell>
+              <TableCell align="center">
+              Votes
                 <div class="btn-group-vertical">
                   <button
                     class="sort"
@@ -220,9 +263,9 @@ const AllAnswers = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th style={{ width: "13%" }}>
-                Created{" "}
+                </TableCell>
+              <TableCell align="center">
+              Created
                 <div class="btn-group-vertical">
                   <button
                     class="sort"
@@ -250,61 +293,55 @@ const AllAnswers = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th style={{ width: "10%" }}>Comments</th>
-              <th style={{ width: "15%" }}>Modify</th>
-            </tr>
-          </thead>
-          <tbody>
-            {answersOfPage.map((answer, i) => (
-              <tr className={classes.row} key={answer.id}>
-                <th>{i + 1}</th>
-                <td>{answer.author.username}</td>
-                <td style={{ wordBreak:"break-word" }} dangerouslySetInnerHTML={{__html:truncate(answer.text, 40)}}></td>
-                <td>{answer.score}</td>
-                <td>{moment(answer.created).format("DD/MM/YYYY hh:mm:ss")}</td>
-                <td>
-                  <Button
-                    variant="contained"
-                    style={{
-                      marginRight: 10,
-                    }}
-                    color="primary"
-                    component={Link}
-                    to={`/comments/${question}/${answer.id}`}
-                  >
-                    View
-                  </Button>{" "}
-                </td>
-                <td>
-                  <Button
-                    variant="contained"
-                    style={{
-                      marginRight: 10,
-                      background: "#09aeae",
-                      color: "white",
-                    }}
-                    href={`http://localhost:3000/questions/${question}`}
-                    target="_blank"
-                  >
-                    Details
-                  </Button>{" "}
-                  {/* change it to user.id to use JSON Server */}
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    onClick={() => deleteAnswerFunction(answer.id)}
-                  >
-                    Delete
-                  </Button>{" "}
-                  {/* change it to user.id to use JSON Server */}
-                </td>
-              </tr>
+                </TableCell>
+              <TableCell align="center">
+              Comment            
+                </TableCell>
+            
+              <TableCell align="center"></TableCell>
+              <TableCell align="center"></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {answersOfPage?.map((row,i) => (
+              <TableRow
+                key={row.name}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell align="center">{i + 1}</TableCell>
+                <TableCell sx={qt_title} align="center" dangerouslySetInnerHTML={{__html:row.author.username}}></TableCell>
+              
+                <TableCell  align="center" >
+                  <div style={qt_content} dangerouslySetInnerHTML={{__html:row.text}}>
+
+                  </div>
+                </TableCell>
+
+                <TableCell align="center">
+                {row.votes.length}
+                </TableCell>
+                <TableCell sx={qt_title} align="center">{moment(row.created).format("DD/MM/YYYY hh:mm:ss")}</TableCell>
+                <TableCell align="center">
+                {row.comments.length}
+                </TableCell>
+              
+              
+                <TableCell align="center">
+                  <Button color="info"  href={`http://localhost:3000/questions/${questionId}-${slug(title)}`}
+                    target="_blank">Detail</Button>
+                </TableCell>
+                
+                <TableCell align="center">
+                  <Button   color="warning"
+                    onClick={() => deleteAnswerFunction(row.id)}>Delete</Button>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
-      <nav aria-label="Page navigation example">
+          </TableBody>
+        </Table>
+      </TableContainer>
+     
+      <nav aria-label="Page navigation example" className="pt_outline">
         <ul class="pagination justify-content-center">
           <li class={isFirstPage()}>
             <a class="page-link" onClick={previous}>

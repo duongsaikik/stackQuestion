@@ -1,5 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import styles from './tagInput.module.css'
 
 
@@ -11,8 +11,12 @@ const TagInput = ({ selectedTags, inputInfo, label, errorMessage }) => {
 	const [tag, setTags] = useState([]);
 	const [itemTag, setItemTag] = useState(null);
 	const [search, setSearch] = useState('');
-	const [err,setErr] = useState(errorMessage);
+	const [err,setErr] = useState('');
 
+	useEffect(() =>{
+		setErr(errorMessage)
+	},[errorMessage])
+	console.log(err)
 	const removeTags = (indexToRemove) => {
 		setTags([...tag.filter((_, index) => index !== indexToRemove)]);
 
@@ -20,7 +24,8 @@ const TagInput = ({ selectedTags, inputInfo, label, errorMessage }) => {
 	const removeAccents = (str) => {
 		return str.normalize('NFD')
 			.replace(/[\u0300-\u036f]/g, '')
-			.replace(/đ/g, 'd').replace(/Đ/g, 'D');
+			.replace(/đ/g, 'd').replace(/Đ/g, 'D')
+			.toLowerCase();
 	}
 
 	const existsTg = (v) =>{
@@ -29,39 +34,51 @@ const TagInput = ({ selectedTags, inputInfo, label, errorMessage }) => {
 
 	const addTags = event => {
 		if (event.target.value !== "" && event.target.value !== " ") {
-				const receive = event.target.value;
-			    const t = receive.replace(/\s/g,"");
-			if (existsTg(t)) {
-				setErr("Tag đã tồn tại trong danh sách");
-				setItemTag(null)
-			} else {
-				setTags([...tag, removeAccents(t)]);
-				selectedTags([...tag, removeAccents(t)]);
-				event.target.value = "";
-				setSearch('')
-				setItemTag(null)
-				setErr(null);
-			}
+				if(event.target.value.lenth > 10){
+					setErr("Độ dài của tag vượt quá 10");
+				}else{
+					const receive = event.target.value;
+					const t = receive.replace(/\s/g,"");
+					if (existsTg(t)) {
+						console.log(1)
+						setErr("Tag đã tồn tại trong danh sách");
+						setItemTag(null)
+					} else {
+						setTags([...tag, removeAccents(t)]);
+						selectedTags([...tag, removeAccents(t)]);
+						event.target.value = "";
+						setSearch('')
+						setItemTag(null)
+						setErr(null);
+					}
+				}
+				
+			
 		}else{
 			setSearch('')
 		}
 	};
 	const handlerShow = async (e) => {
-		setSearch(e.target.value)
-		var request = {
-			params: {
-				page: 1,
-				size: 30
+		if(e.target.value.length > 10){
+			setErr("Độ dài của tag vượt quá 10");
+		}else{
+			setSearch(e.target.value)
+			var request = {
+				params: {
+					page: 1,
+					size: 30
+				}
+			}
+			if (e.target.value === '') {
+				setItemTag(null)
+			} else {
+				const { data } = await publicFetch.get(
+					`/tags/${e.target.value}`, request
+				)
+				setItemTag(data.tag)
 			}
 		}
-		if (e.target.value === '') {
-			setItemTag(null)
-		} else {
-			const { data } = await publicFetch.get(
-				`/tags/${e.target.value}`, request
-			)
-			setItemTag(data.tag)
-		}
+		
 	}
 	const handlerChooseTag = (tags) => {
 		
@@ -97,7 +114,7 @@ const TagInput = ({ selectedTags, inputInfo, label, errorMessage }) => {
 				<input
 					type="text"
 					onKeyUp={event => event.keyCode === 32 ? addTags(event) : null}
-					placeholder="Nhấn enter để thêm tag"
+					placeholder="Nhấn space để thêm tag"
 					onChange={handlerShow}
 					value={search}
 				/>

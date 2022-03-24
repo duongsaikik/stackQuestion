@@ -16,7 +16,7 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="card">
-        <LoginForm screen="signup" />
+        <LoginForm screen="login" />
       </div>
     </div>
   )

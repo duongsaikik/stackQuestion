@@ -95,7 +95,8 @@ const Header = ({ className, ...props }) => {
           console.log()
       }else{
         const options = document.getElementById("options");
-        options.classList.remove(styles.show_opttions)
+        if(options)
+          options.classList.remove(styles.show_opttions)
       }
      
     };

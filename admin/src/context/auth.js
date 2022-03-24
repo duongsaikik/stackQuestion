@@ -47,6 +47,9 @@ const AuthProvider = ({ children }) => {
   const isAdmin = () => {
     return authState.userInfo?.role === 'admin'
   }
+  const isChecker = () => {
+    return authState.userInfo?.role === 'checker'
+  }
 
   return (
     <Provider
@@ -55,7 +58,8 @@ const AuthProvider = ({ children }) => {
         setAuthState: (authInfo) => setAuthInfo(authInfo),
         logout,
         isAuthenticated,
-        isAdmin
+        isAdmin,
+        isChecker
       }}
     >
       {children}

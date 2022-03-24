@@ -1,14 +1,19 @@
 import { useState, useEffect, useContext } from "react";
 import moment from "moment";
 import {
-  Table,
-  TableHead,
-  TableCell,
-  TableRow,
-  TableBody,
-  Button,
+
   makeStyles,
 } from "@material-ui/core";
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
+
+/* import { Spinner } from '../components/icons' */
+import { Button } from '@mui/material'
 import {
   getQuestionsOfCurrentPage,
   getAllQuestions,
@@ -22,6 +27,8 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FetchContext } from "../../context/fetch";
 import axios from "axios";
+import slug from 'slug'
+
 const useStyles = makeStyles({
   table: {
     width: "90%",
@@ -59,23 +66,25 @@ const AllQuestions = () => {
   const [totalPages, setTotalPages] = useState([]);
   const pages = new Array(totalPages).fill(null).map((v, i) => i);
   const qt_content = {
-    wordBreak: 'break-word',
-    whiteSpace: 'pre-wrap',
-    overflow: 'hidden',
-    WebkitLineClamp: 4,
     display: '-webkit-box',
-    WebkitBoxOrient: 'vertical',
-    textAlign : 'left'
-     
-  }
-  const qt_title = {
     wordBreak: 'break-word',
     whiteSpace: 'pre-wrap',
     overflow: 'hidden',
     WebkitLineClamp: 3,
     WebkitBoxOrient: 'vertical',
-     textAlign : 'left'
+    textAlign : 'left'
+   
   }
+  const qt_title = { 
+    wordBreak: 'break-word',
+    whiteSpace: 'pre-wrap',
+    overflow: 'hidden',
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: 'vertical',
+    textAlign : 'left'
+   
+  }
+ 
   const previous = () => {
     setQuery({
       pageNumber: Math.max(0, query.pageNumber - 1),
@@ -148,6 +157,7 @@ const AllQuestions = () => {
 
   return (
     <div className="App">
+      <div>
       <h1>QUESTIONS MANAGEMENT</h1>
       <form class="d-flex">
         <input
@@ -163,16 +173,20 @@ const AllQuestions = () => {
           <FontAwesomeIcon icon={faSearch} />
         </button>
       </form>
-      <div class="table-responsive-xxl">
-        <table class="table table-sm table-bordered table-striped">
-          <thead class="table-dark">
-            <tr className={classes.thead}>
-              <th style={{ width: "3%" }}>No.</th>
-              <th style={{ width: "20%", wordBreak: "break-word" }}>
-                Title{" "}
+      <TableContainer component={Paper}>
+        
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+            <TableCell align="center">
+              No. 
+            
+              </TableCell>
+              <TableCell align="center">
+                Title 
                 <div class="btn-group-vertical">
                   <button
-                    class="sort"
+                    className="sort"
                     onClick={() =>
                       setQuery({
                         pageNumber: query.pageNumber,
@@ -183,7 +197,7 @@ const AllQuestions = () => {
                     <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
                   </button>
                   <button
-                    class="sort"
+                    className="sort"
                     onClick={() =>
                       setQuery({
                         pageNumber: query.pageNumber,
@@ -197,42 +211,16 @@ const AllQuestions = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th style={{ wordBreak: "break-word" }}>
-                Text{" "}
-                <div class="btn-group-vertical">
+                </TableCell>
+              <TableCell align="center">
+                Text
+               
+                </TableCell>
+              <TableCell align="center">
+                Author
+                <div className="btn-group-vertical">
                   <button
-                    class="sort"
-                    onClick={() =>
-                      setQuery({
-                        pageNumber: query.pageNumber,
-                        sort: "-text",
-                      })
-                    }
-                  >
-                    <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
-                  </button>
-                  <button
-                    class="sort"
-                    onClick={() =>
-                      setQuery({
-                        pageNumber: query.pageNumber,
-                        sort: "text",
-                      })
-                    }
-                  >
-                    <FontAwesomeIcon
-                      icon={faSortDown}
-                      className={"downarrow"}
-                    />
-                  </button>
-                </div>
-              </th>
-              <th style={{ width: "8%" }}>
-                Author{" "}
-                <div class="btn-group-vertical">
-                  <button
-                    class="sort"
+                    className="sort"
                     onClick={() =>
                       setQuery({
                         pageNumber: query.pageNumber,
@@ -243,7 +231,7 @@ const AllQuestions = () => {
                     <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
                   </button>
                   <button
-                    class="sort"
+                    className="sort"
                     onClick={() =>
                       setQuery({
                         pageNumber: query.pageNumber,
@@ -257,12 +245,12 @@ const AllQuestions = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th style={{ width: "7%" }}>
-                Votes{" "}
+                </TableCell>
+              <TableCell align="center">
+                Votes
                 <div class="btn-group-vertical">
                   <button
-                    class="sort"
+                    className="sort"
                     onClick={() =>
                       setQuery({
                         pageNumber: query.pageNumber,
@@ -273,7 +261,7 @@ const AllQuestions = () => {
                     <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
                   </button>
                   <button
-                    class="sort"
+                    className="sort"
                     onClick={() =>
                       setQuery({
                         pageNumber: query.pageNumber,
@@ -287,12 +275,12 @@ const AllQuestions = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th style={{ width: "13%" }}>
-                Created{" "}
+                </TableCell>
+              <TableCell align="center">
+                Created
                 <div class="btn-group-vertical">
                   <button
-                    class="sort"
+                    className="sort"
                     onClick={() =>
                       setQuery({
                         pageNumber: query.pageNumber,
@@ -303,7 +291,7 @@ const AllQuestions = () => {
                     <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
                   </button>
                   <button
-                    class="sort"
+                    className="sort"
                     onClick={() =>
                       setQuery({
                         pageNumber: query.pageNumber,
@@ -317,86 +305,78 @@ const AllQuestions = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th style={{ width: "8%" }}>Answers</th>
-              <th style={{ width: "8%" }}>Comments</th>
-              <th style={{ width: "13%" }}>Modify</th>
-            </tr>
-          </thead>
-          <tbody>
-            {questionsOfCurrentPage.map((question, i) => (
-              <tr className={classes.row} key={question.id}>
-                <th>{i + 1}</th>
-                <td
-                  style={qt_title}
-                  dangerouslySetInnerHTML={{ __html: question.title }}
-                ></td>
-                <td
-                  style={qt_content}
-                  dangerouslySetInnerHTML={{ __html: question.text }}
-                ></td>
-                <td>{question.author.username}</td>
-                <td>{question.votes.length}</td>
-                <td>
-                  {moment(question.created).format("DD/MM/YYYY hh:mm:ss")}
-                </td>
-                <td>
-                  <Button
-                    variant="contained"
-                    style={{
-                      marginRight: 10,
-                      color: "white",
-                    }}
-                    color="primary"
-                    component={Link}
-                    to={`/answers/${question.id}`}
-                  >
-                    View
-                  </Button>{" "}
-                </td>
-                <td>
-                  <Button
-                    variant="contained"
-                    style={{
-                      marginRight: 10,
-                      color: "white",
-                    }}
-                    color="primary"
-                    component={Link}
-                    to={`/comments/${question.id}`}
-                  >
-                    View
-                  </Button>{" "}
-                </td>
-                <td>
-                  <Button
-                    variant="contained"
-                    style={{
-                      marginRight: 10,
-                      background: "#09aeae",
-                      color: "white",
-                    }}
-                    href={`http://localhost:3000/questions/${question.id}-${question.title}`}
-                    target="_blank"
-                  >
-                    Details
-                  </Button>{" "}
-                  {/* change it to user.id to use JSON Server */}
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    onClick={() => deleteQuestionFunction(question.id)}
-                  >
-                    Delete
-                  </Button>{" "}
-                  {/* change it to user.id to use JSON Server */}
-                </td>
-              </tr>
+                </TableCell>
+              <TableCell align="center">Answers</TableCell>
+              <TableCell align="center">Comments</TableCell>
+              <TableCell align="center">Status</TableCell>
+              <TableCell align="center"></TableCell>
+              <TableCell align="center"></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {questionsOfCurrentPage?.map((row,i) => (
+              
+                <TableRow
+                  key={row.name}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell align="center">{i + 1}</TableCell>
+                  <TableCell sx={qt_title} align="center" dangerouslySetInnerHTML={{__html:row.title}}></TableCell>
+                
+                  <TableCell  align="center" >
+                    <div style={qt_content} dangerouslySetInnerHTML={{__html:row.text}}>
+  
+                    </div>
+                  </TableCell>
+                  <TableCell align="center">{row.author.username}</TableCell>
+                  <TableCell align="center">
+                  {row.votes.length}
+                  </TableCell>
+                 
+                  <TableCell align="center">{moment(row.created).format("DD/MM/YYYY hh:mm:ss")}</TableCell>
+                  <TableCell align="center">
+                    <Button  component={Link}
+                      to={`/answers/${row.id}-${slug(row.title)}`}>View</Button>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Button  component={Link}
+                     to={`/comments/${row.id}-${slug(row.title)}`}>View</Button>
+                  </TableCell>
+                  <TableCell align="center">
+                  <Button  color={
+                    row._status === 'pending' 
+                    ? "info"
+                    :  row._status === 'deny' 
+                    ? "warning"
+                    : "success"
+                  }>
+                      {row._status}
+                    </Button>
+            
+                  </TableCell>
+                  <TableCell align="center">
+                    { 
+                      row._status === 'pending' || row._status === 'deny'
+                      ? ''
+                      :  <Button color="success" 
+                      href={`http://localhost:3000/questions/${row.id}-${slug(row.title)}`}
+                      target="_blank">Detail</Button>
+                    }
+                   
+                  </TableCell>
+                  <TableCell align="center">
+                    <Button  component={Link}  
+                      onClick={() => deleteQuestionFunction(row.id)}>Delete</Button>
+                  </TableCell>
+                </TableRow>
+                
+            
+            
             ))}
-          </tbody>
-        </table>
-      </div>
-      <nav aria-label="Page navigation example">
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <nav aria-label="Page navigation example" className="pt_outline">
         <ul class="pagination justify-content-center">
           <li class={isFirstPage()}>
             <a class="page-link" onClick={previous}>
@@ -423,6 +403,7 @@ const AllQuestions = () => {
           </li>
         </ul>
       </nav>
+      </div>
     </div>
   );
 };

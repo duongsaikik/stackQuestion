@@ -56,6 +56,7 @@ const EditUser = () => {
    
     setUser({ ...user, [e.target.name]: e.target.value,[e.target.email]: e.target.value });
   };
+  
   const onValueChangeBan = (e) =>{
     if(e.target.value === 'true'){
       setUser({...user,[e.target.name]:true});

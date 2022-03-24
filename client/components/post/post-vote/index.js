@@ -22,7 +22,7 @@ const PostVote = ({
   const { authState, isAuthenticated } = useContext(AuthContext)
   const { authAxios } = useContext(FetchContext)
   const { handleComponentVisible } = useContext(ModalContext)
-   
+
   const exists = () => {
     if (votes.find((v) => v.user === authState.userInfo?.id)) {
       return true;
@@ -96,6 +96,7 @@ const PostVote = ({
         <ArrowDown className={isDownVoted() ? styles.voted : exists() ? styles.hide : ''} />
       </Button>
       {
+        isAuthenticated()?
         id === authState.userInfo.id
           ? check
             ? checkAnswer
@@ -113,6 +114,7 @@ const PostVote = ({
               <CheckIcon className={styles.vote} />
             </Button>
           : ''
+          :''
 
       }
 

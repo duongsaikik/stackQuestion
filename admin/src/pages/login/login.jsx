@@ -23,11 +23,15 @@ const Login = () => {
                     values
                   );
                   const { token, expiresAt, userInfo } = data;
-                  if (userInfo.role === "admin") {
+                  if (userInfo.role === "admin" ) {
                     await setAuthState({ token, expiresAt, userInfo });
                     resetForm({});
                     window.location.href = "/users";
-                  } else {
+                  } else if(userInfo.role === "checker"){
+                    await setAuthState({ token, expiresAt, userInfo });
+                    resetForm({});
+                    window.location.href = "/censorship";
+                  }else{
                     await logout();
                     setStatus("You don't have permission to access this page");
                   }

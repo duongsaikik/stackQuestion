@@ -24,11 +24,15 @@ const LoginForm = () => {
         setLoading(true)
         try {
           const { data } = await publicFetch.post('authenticate', values)
+        
           const { token, expiresAt, userInfo } = data
-          console.log(data)
-          setAuthState({ token, expiresAt, userInfo })
-          resetForm({})
-          setIsComponentVisible(false)
+          if(userInfo.role === 'user'){
+            setAuthState({ token, expiresAt, userInfo })
+            resetForm({})
+            setIsComponentVisible(false)
+          }else{
+            setStatus("Tài khoản không tồn tại")
+          }        
         } catch (error) {
           setStatus(error.response.data.message)
         }

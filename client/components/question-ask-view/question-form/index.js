@@ -4,7 +4,7 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 
 import { FetchContext } from '../../../store/fetch'
-
+import { AuthContext } from '../../../store/auth'
 import Button from '../../button'
 import Textarea from '../../textarea'
 import FormInput from '../../form-input'
@@ -17,6 +17,7 @@ import styles from './question-form.module.css'
 const QuestionForm = () => {
   const router = useRouter()
   const { authAxios } = useContext(FetchContext)
+  const { isAuthenticated} = useContext(AuthContext)
 
   const [loading, setLoading] = useState(false)
 
@@ -49,18 +50,24 @@ const selectedTags = (tags) => {
             text: contentBo,
             tags
           }
-          if(contentBo.length > 30 ){
-            await authAxios.post('questions',req)
-            resetForm({})
-            router.push('/')
+          if(isAuthenticated()){
+            if(contentBo.length > 30 && tagsSelect.length > 0 ){
+              console.log(req)
+              await authAxios.post('questions',req)
+              resetForm({})
+              router.push('/')
+            }else if(contentBo.length < 30){         
+              setErrMessBo("Nội dung phải lớn hơn 30 ký tự");
+            }else{
+              setErrMessBo('')
+              setErrMessTag("Cần ít nhất 1 tag");
+            }
           }else{
-            setErrMessBo("Nội dung phải lớn hơn 30 ký tự");
-          }
-          if(tagsSelect === null ){
-            setErrMessTag("Cần ít nhất 1 tag");
-            
+            router.push("/auth");
           }
          
+         
+        
          
         } catch (error) {
           setStatus(error.response.data.message)

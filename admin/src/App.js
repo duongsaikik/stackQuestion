@@ -14,12 +14,17 @@ import CodeForInterview from "./pages/CodeForInterview";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { AuthProvider } from "./context/auth";
 import { FetchProvider } from "./context/fetch";
+import Header from "./pages/header";
 import PrivateRoute from './components/privateRoute'
 function App() {
   return (
     <AuthProvider>
+      
       <FetchProvider>
+        
         <BrowserRouter>
+        <Redirect exact from="/logout" to="/login" />
+        <Header/>
           <NavBar />
           <Switch>
             <Route exact path="/login" component={Login} />
@@ -39,7 +44,7 @@ function App() {
             <PrivateRoute exact path="/answers/:question" component={AllAnswers} />
             <PrivateRoute exact path="/answers/add" component={AddComment} />
             <PrivateRoute exact path="/censorship" component={AllCensorship} />
-            <Redirect exact from="/logout" to="/login" />
+           
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>

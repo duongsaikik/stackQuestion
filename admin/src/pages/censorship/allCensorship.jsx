@@ -37,8 +37,8 @@ const qt_content = {
   WebkitLineClamp: 4,
   display: '-webkit-box',
   WebkitBoxOrient: 'vertical',
-  textAlign : 'left'
-   
+  textAlign: 'left'
+
 }
 const qt_title = {
   wordBreak: 'break-word',
@@ -46,7 +46,7 @@ const qt_title = {
   overflow: 'hidden',
   WebkitLineClamp: 3,
   WebkitBoxOrient: 'vertical',
-   textAlign : 'left'
+  textAlign: 'left'
 }
 const qt_tag = {
   wordBreak: 'break-word',
@@ -54,8 +54,8 @@ const qt_tag = {
   overflow: 'hidden',
   WebkitLineClamp: 3,
   WebkitBoxOrient: 'vertical',
-  
-  
+  textAlign: 'left'
+
 }
 const qt_itemTag = {
   padding: '4px',
@@ -64,7 +64,7 @@ const qt_itemTag = {
   fontSize: '12px',
   color: 'white',
   margin: '2px'
-  
+
 }
 const AllCensorship = () => {
 
@@ -84,7 +84,7 @@ const AllCensorship = () => {
     console.log(data)
     setQuestions(data.data)
   }
-  
+
   const fetchQuestionByTag = async () => {
     const { data } = await axios.get(`${usersUrl}/questions/` + selectedTag)
     setQuestions(data)
@@ -101,7 +101,7 @@ const AllCensorship = () => {
     const { data } = await axios.put(`${usersUrl}/question/` + questionId, {
       _status: _status
     })
- 
+
   }
 
   const handleModal = (id) => {
@@ -120,7 +120,7 @@ const AllCensorship = () => {
     else if (selectedTag) {
       fetchQuestionByTag()
     }
-  
+
   }, [selectedTag])
 
   useEffect(() => {
@@ -175,12 +175,12 @@ const AllCensorship = () => {
             <MenuItem value={'All'}>All</MenuItem>
             {tags ? tags.map((item) => (
               <MenuItem value={item._id}>{item._id}</MenuItem>
-            )):''}
+            )) : ''}
           </Select>
         </FormControl>
       </Box>
       <TableContainer component={Paper}>
-        
+
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -200,8 +200,12 @@ const AllCensorship = () => {
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell sx={qt_title} align="center">{row.title}</TableCell>
-                <TableCell sx={qt_content} align="center" dangerouslySetInnerHTML={{__html:row.text}}></TableCell>
-                <TableCell  sx={qt_tag} align="center">{row.tags?.map((item,index) =>{
+                <TableCell align="center" >
+                  <div style={qt_content} dangerouslySetInnerHTML={{ __html: row.text }}>
+
+                  </div>
+                </TableCell>
+                <TableCell sx={qt_tag} align="center">{row.tags?.map((item, index) => {
                   return <span style={qt_itemTag} key={index}>
                     {item}
                   </span>
@@ -210,17 +214,17 @@ const AllCensorship = () => {
                 <TableCell align="center">{row.author.username}</TableCell>
                 <TableCell align="center">
                   {row._status === 'done' && (
-                    <Button variant="contained" color="success">
+                    <Button  color="success">
                       {row._status}
                     </Button>
                   )}
                   {row._status === 'pending' && (
-                    <Button variant="contained" color="info">
+                    <Button  color="info">
                       {row._status}
                     </Button>
                   )}
                   {row._status === 'deny' && (
-                    <Button variant="contained" color="warning">
+                    <Button  color="warning">
                       {row._status}
                     </Button>
                   )}
@@ -229,11 +233,11 @@ const AllCensorship = () => {
                   <Button onClick={() => handleModal(row.id)}>Duyệt</Button>
                 </TableCell>
               </TableRow>
-            )):''}
+            )) : ''}
           </TableBody>
         </Table>
       </TableContainer>
-  
+
     </div>
   )
 }

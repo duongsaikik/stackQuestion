@@ -198,8 +198,8 @@ exports.authenticate = async (req, res) => {
       const token = createToken(user);
       const decodedToken = jwtDecode(token);
       const expiresAt = decodedToken.exp;
-      const { username, role, id, created, profilePhoto } = user;
-      const userInfo = { username, role, id, created, profilePhoto };
+      const { username, role, id, created, profilePhoto,ban } = user;
+      const userInfo = { username, role, id, created, profilePhoto,ban };
 
       res.json({
         message: 'Authentication successful!',
@@ -356,12 +356,8 @@ exports.editUser = async (req, res, next) => {
   try {
     let user = await User.findOne({ username: req.params.username });
     user.role = req.body.role;
-    if(req.body.email){
-      user.email = req.body.email;
-    }
-    if(req.body.ban){
-      user.ban = req.body.ban;
-    } 
+      user.email = req.body.email;   
+      user.ban = req.body.ban;   
     await user.save();
     res.json(user);
   } catch (error) {

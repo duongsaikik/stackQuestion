@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
   margin-top: 40px;
 }
@@ -7,7 +7,11 @@
   height: 40vmin;
   pointer-events: none;
 }
-
+ */
+ .pt_outline{
+   margin-top: 10px;
+ }
+ a{text-decoration: none;}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -70,4 +74,8 @@ td, th{
 }
 table{
   table-layout: fixed;
+}
+p{
+ 
+ 
 }

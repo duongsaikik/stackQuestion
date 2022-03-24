@@ -14,7 +14,7 @@ const TextArea = ({
    errorMessage,
   ...props
 }) => {
-  console.log(value + " s")
+  
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false)
   const { CKEditor, ClassicEditor } = editorRef.current || {}

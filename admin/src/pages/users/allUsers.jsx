@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
 import moment from "moment";
-import { Button, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import {
   getUsersOfCurrentPage,
   deleteUser,
   getAllUsers
 } from "../../controllers/users";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { Button } from '@mui/material';
+
 import { Link } from "react-router-dom";
 import { faSortUp } from "@fortawesome/free-solid-svg-icons";
 import { faSortDown } from "@fortawesome/free-solid-svg-icons";
@@ -44,6 +53,26 @@ const AllUsers = () => {
   const [query, setQuery] = useState({ pageNumber: 0, sort: "", search: "" });
   const [totalPages, setTotalPages] = useState([]);
   const pages = new Array(totalPages).fill(null).map((v, i) => i);
+
+  const qt_content = {
+    wordBreak: 'break-word',
+    whiteSpace: 'pre-wrap',
+    overflow: 'hidden',
+    WebkitLineClamp: 1,
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    textAlign: 'left'
+
+  }
+  const qt_title = {
+    wordBreak: 'break-word',
+    whiteSpace: 'pre-wrap',
+    overflow: 'hidden',
+    WebkitLineClamp: 1,
+    WebkitBoxOrient: 'vertical',
+    textAlign: 'left'
+  }
+
   const previous = () => {
     setQuery({
       pageNumber: Math.max(0, query.pageNumber - 1),
@@ -86,13 +115,13 @@ const AllUsers = () => {
   //     })
   //   );
   // }, [searchTerm]);
-  useEffect(()=>{
+  useEffect(() => {
     setQuery({
       pageNumber: query.pageNumber,
       sort: query.sort,
       search: searchTerm
     });
-  },[searchTerm])
+  }, [searchTerm])
 
 
   const deleteUserFunction = async (id) => {
@@ -146,70 +175,22 @@ const AllUsers = () => {
           <FontAwesomeIcon icon={faSearch} />
         </button>
       </form>
-      <div class="table-responsive-xxl">
-        <table class="table table-sm table-bordered table-striped">
-          <thead class="table-dark">
-            <tr className={classes.thead}>
-              <th style={{ width: "5%" }}>No.</th>
-              <th style={{ width: "15%" }}>
-                Username{" "}
-                <div class="btn-group-vertical">
-                  <button
-                    class="sort"
-                    onClick={() =>
-                      setQuery({
-                        pageNumber: query.pageNumber,
-                        sort: "-username",
-                      })
-                    }
-                  >
-                    <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
-                  </button>
-                  <button
-                    class="sort"
-                    onClick={() =>
-                      setQuery({
-                        pageNumber: query.pageNumber,
-                        sort: "username",
-                      })
-                    }
-                  >
-                    <FontAwesomeIcon
-                      icon={faSortDown}
-                      className={"downarrow"}
-                    />
-                  </button>
-                </div>
-              </th>
-              <th style={{ width: "25%" }}>
-                Email{" "}
-                <div class="btn-group-vertical">
-                  <button
-                    class="sort"
-                    onClick={() =>
-                      setQuery({
-                        pageNumber: query.pageNumber,
-                        sort: "-email",
-                      })
-                    }
-                  >
-                    <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
-                  </button>
-                  <button
-                    class="sort"
-                    onClick={() =>
-                      setQuery({ pageNumber: query.pageNumber, sort: "email" })
-                    }
-                  >
-                    <FontAwesomeIcon
-                      icon={faSortDown}
-                      className={"downarrow"}
-                    />
-                  </button>
-                </div>
-              </th>
-              <th style={{ width: "7%" }}>
-                Role{" "}
+      <TableContainer component={Paper}>
+
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center">No.</TableCell>
+              <TableCell align="center">
+                Username
+
+              </TableCell>
+              <TableCell align="center">
+                Email
+
+              </TableCell>
+              <TableCell align="center">
+                Role
                 <div class="btn-group-vertical">
                   <button
                     class="sort"
@@ -234,10 +215,10 @@ const AllUsers = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th style={{ width: "7%" }}>Avatar</th>
-              <th>
-                Created{" "}
+              </TableCell>
+              <TableCell align="center">Image</TableCell>
+              <TableCell align="center">
+                Created
                 <div class="btn-group-vertical">
                   <button
                     class="sort"
@@ -265,60 +246,74 @@ const AllUsers = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th>Modify</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usersOfCurrentPage.map((user, i) => (
-              <tr className={classes.row} key={user.id}>
-                <th>{i + 1}</th>
-                <td>{user.username}</td>
-                <td>{user.email}</td>
-                <td>{user.role}</td>
-                <td>
-                  <img src={user.profilePhoto} alt="Avatar"></img>
-                </td>
-                <td>{moment(user.created).format("DD/MM/YYYY hh:mm:ss")}</td>
-                <td>
-                  <Button
-                    variant="contained"
-                    style={{
-                      marginRight: 10,
-                      background: "#09aeae",
-                      color: "white",
-                    }}
-                    href={`http://localhost:3000/users/${user.username}`}
-                    target="_blank"
-                  >
-                    Details
-                  </Button>{" "}
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    style={{ color: "white", marginRight: 10 }}
+              </TableCell>
+              <TableCell align="center">Ban</TableCell>
+              <TableCell align="center">Modify</TableCell>
+              <TableCell align="center"></TableCell>
+              <TableCell align="center"></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {usersOfCurrentPage?.map((row, i) => (
+              <TableRow
+                key={row.name}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell align="center">{i + 1}</TableCell>
+                <TableCell sx={qt_title} align="center">{row.username}</TableCell>
+                <TableCell align="center">
+                  <div style={qt_content}>
+                    {row.email}
+                  </div>
+
+                </TableCell>
+
+                <TableCell align="center">{row.role}</TableCell>
+                <TableCell align="center">
+                  <img src={row.profilePhoto} alt="Avatar"></img>
+                </TableCell>
+                <TableCell align="center">
+                  <div style={qt_content}>
+                    {moment(row.created).format("DD/MM/YYYY hh:mm:ss")}
+                  </div>
+                </TableCell>
+                <TableCell align="center">
+                  <Button color={row.ban ? "warning" : "success"}>
+                    {row.ban ? "True" : "False"}
+                  </Button>
+
+                </TableCell>
+                <TableCell align="center">
+                  {
+                    row.role === 'checker' || row.role === 'admin'
+                      ? ''
+                      : <Button color="success"
+                        href={`http://localhost:3000/users/${row.username}`}
+                        target="_blank"
+                      >
+                        Detail
+                      </Button>
+                  }
+
+                </TableCell>
+
+                <TableCell align="center">
+                  <Button color="info"
                     component={Link}
-                    to={`/users/edit/${user.username}`}
-                  >
-                    Edit
-                  </Button>{" "}
-                
-                  {/* change it to user.id to use JSON Server */}
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    onClick={() => deleteUserFunction(user.username)}
-                  >
-                    Delete
-                  </Button>{" "}
-                  {/* change it to user.id to use JSON Server */}
-                </td>
-              </tr>
+                    to={`/users/edit/${row.username}`}
+                  >Edit</Button>
+                </TableCell>
+                <TableCell align="center">
+                  <Button color="warning"
+                    onClick={() => deleteUserFunction(row.username)}
+                  >Delete</Button>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
-      <nav aria-label="Page navigation example">
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <nav aria-label="Page navigation example" className="pt_outline">
         <ul class="pagination justify-content-center">
           <li class={isFirstPage()}>
             <a class="page-link" onClick={previous}>

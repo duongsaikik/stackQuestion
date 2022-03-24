@@ -6,7 +6,7 @@ import useWindowSize from '../../hooks/useWindowSize'
 
 import Sidebar from './sidebar'
 import Main from './main'
-import Extra from './extra'
+
 import Header from './header'
 
 import styles from './layout.module.css'

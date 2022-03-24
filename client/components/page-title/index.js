@@ -9,7 +9,7 @@ import styles from './page-title.module.css'
 
 const PageTitle = ({ title, button, borderBottom = true, children }) => {
   const { isAuthenticated } = useContext(AuthContext)
-
+ 
   return (
     <div className={cn(styles.container, borderBottom && styles.borderBottom)}>
       <div className={styles.title}>
@@ -17,6 +17,7 @@ const PageTitle = ({ title, button, borderBottom = true, children }) => {
         <div className={styles.buttonContainer}>
           {button && (
             <Button
+          
               href={isAuthenticated() ? '/questions/ask' : '/auth'}
               primary
             >
