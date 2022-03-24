@@ -29,6 +29,9 @@ const NavBar = () => {
         <NavLink className={classes.tabs} to="/questions" exact>
           Questions
         </NavLink>
+        <NavLink className={classes.tabs} to="/censorship" exact>         
+          Censorship
+        </NavLink>
         {isAuthenticated() ? (
           <NavLink
             className={classes.tabs}

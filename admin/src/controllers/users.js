@@ -6,7 +6,12 @@ export const getAllUsers = async () => {
 
 export const getUserByUsername = async (id) => {
   id = id || "";
-  return await axios.get(`${usersUrl}/user/${id}`);
+  var request = {
+    params :{
+      username: id
+    }
+  }
+  return await axios.get(`${usersUrl}/user/find`,request);
 };
 export const getUsersOfCurrentPage = async (page, sort, search) => {
   page = page || 0;
@@ -18,6 +23,7 @@ export const getUsersOfCurrentPage = async (page, sort, search) => {
 export const addUser = async (user) => {
   return await axios.post(`${usersUrl}/user/addUser`, user);
 };
+
 
 export const deleteUser = async (id) => {
   return await axios.delete(`${usersUrl}/user/deleteUser/${id}`);

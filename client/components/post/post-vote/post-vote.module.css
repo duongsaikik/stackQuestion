@@ -25,6 +25,9 @@
   position: absolute;
   bottom: -40px;
 }
+.checkBtn{
+  pointer-events: none;
+}
 .voted {
   color: var(--orange) !important;
 }
@@ -46,9 +49,11 @@
   color: var(--black-200) !important;
   width: 36px;
   height: 36px;
+
 }
 .checkVote{
   color: var(--green) !important;
+  pointer-events: none;
 }
 
 .hideVote{

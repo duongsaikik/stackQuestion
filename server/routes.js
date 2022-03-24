@@ -21,17 +21,21 @@ const {
   listByUser,
   removeQuestion,
   findQuestion,
-  sortQuestion
+  sortQuestion,
+  getQuestionsOfCurrentPage,
+  updateQuestionStatus
 } = require('./controllers/questions');
 const {
   loadAnswers,
   answerValidate,
   createAnswer,
-  removeAnswer
+  removeAnswer,
+  getAllAnswers,
+  getAnswersOfCurrentPage
 } = require('./controllers/answers');
 const { listPopulerTags, searchTags, listTags } = require('./controllers/tags');
 const { upvote, downvote, unvote,chekVote } = require('./controllers/votes');
-const { loadComments, validate, createComment, removeComment } = require('./controllers/comments');
+const { loadComments, validate, createComment, removeComment, getAllComments, getCommentsOfCurrentPage } = require('./controllers/comments');
 
 const requireAuth = require('./middlewares/requireAuth');
 const questionAuth = require('./middlewares/questionAuth');
@@ -69,6 +73,9 @@ router.delete('/question/:question', [requireAuth, questionAuth], removeQuestion
 router.get('/question/find/:keyWord',findQuestion);
 //questions in admin
 router.get('/questions?', getQuestionsOfCurrentPage);
+router.put('/question/:id', updateQuestionStatus);
+
+
 //tags
 router.get('/tags/populertags', listPopulerTags);
 router.get('/tags/:tag', searchTags);
@@ -97,6 +104,7 @@ router.get('/allComments/:question', getAllComments);
 router.get('/allComments/:question/:answer', getAllComments);
 router.get('/comments/:question?', getCommentsOfCurrentPage);
 router.get('/comments/:question/:answer/?', getCommentsOfCurrentPage);
+
 module.exports = (app) => {
   app.use('/api', router);
 

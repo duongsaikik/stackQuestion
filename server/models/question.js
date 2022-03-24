@@ -20,7 +20,8 @@ const questionSchema = new Schema({
   answers: [answerSchema],
   created: { type: Date, default: Date.now },
   views: { type: Number, default: 0 },
-  check:{type: Boolean, default: false}
+  check:{type: Boolean, default: false},
+  _status:{type:String,default:'pending'}
 });
 
 questionSchema.set('toJSON', { getters: true });

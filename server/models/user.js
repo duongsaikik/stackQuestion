@@ -13,7 +13,8 @@ const userModel = new Schema({
       return `https://secure.gravatar.com/avatar/${this._id}?s=90&d=identicon`;
     }
   },
-  created: { type: Date, default: Date.now }
+  created: { type: Date, default: Date.now },
+  ban:{type: Boolean, default:false}
 });
 
 userModel.set('toJSON', { getters: true });

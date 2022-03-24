@@ -36,7 +36,8 @@ const HomePage = () => {
     }
 
     const fetchQuestionByWord = async () => {
-      const { data } = await publicFetch.get(`/question/find/${router.query.keyWord}`)
+      const { data } = await publicFetch.get(`/question/find/${router.query.keyWord}`,request)
+      console.log(data)
       setQuestions(data.data)
       setTotalPage(data.pageNum)
       setCurrentPage(data.currentPage)

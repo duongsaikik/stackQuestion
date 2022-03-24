@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 
 const initialValue = {
   username: "",
+  email:"",
   role: "",
 };
 
@@ -30,12 +31,12 @@ const useStyles = makeStyles({
 
 const AddUser = () => {
   const [user, setUser] = useState(initialValue);
-  const { username, role } = user;
+  const { username, role ,email} = user;
   const classes = useStyles();
   let history = useHistory();
 
   const onValueChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    setUser({ ...user, [e.target.name]: e.target.value ,[e.target.email]: e.target.value });
   };
 
   const Add = async () => {
@@ -56,6 +57,16 @@ const AddUser = () => {
         />
       </FormControl>
       <FormControl>
+        <InputLabel htmlFor="my-input">Email</InputLabel>
+       <Input            
+          name="email"
+          onChange={(e) => onValueChange(e)}
+          value={email}
+          id="my-input"
+          aria-describedby="my-helper-text"
+        />              
+      </FormControl>
+      <FormControl>
         <InputLabel htmlFor="my-input">Role</InputLabel>
         <Select
           onChange={(e) => onValueChange(e)}
@@ -64,6 +75,7 @@ const AddUser = () => {
           id="my-input"
         >
         <MenuItem value={"user"}>User</MenuItem>
+        <MenuItem value={"checker"}>checker</MenuItem>
         <MenuItem value={"admin"}>Admin</MenuItem>
         </Select>
       </FormControl>

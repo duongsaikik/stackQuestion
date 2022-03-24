@@ -181,10 +181,14 @@ exports.authenticate = async (req, res) => {
     const user = await User.findOne({
       username: username.toLowerCase()
     });
-
+    if(user.ban){
+      return res.status(403).json({
+        message: 'Tài khoản đã bị khoá.'
+      });
+    }
     if (!user) {
       return res.status(403).json({
-        message: 'Wrong username or password.'
+        message: 'Sai tài khoản hoặc mật khẩu.'
       });
     }
 
@@ -205,7 +209,7 @@ exports.authenticate = async (req, res) => {
       });
     } else {
       res.status(403).json({
-        message: 'Wrong username or password.'
+        message: 'Sai tài khoản hoặc mật khẩu.'
       });
     }
   } catch (error) {
@@ -250,13 +254,11 @@ exports.search = async (req, res, next) => {
 exports.find = async (req, res, next) => {
   try {
     const { username, email } = req.query;
-
-
     if (username) {
       const users = await User.findOne({ username: username });
       res.json(users);
 
-    } else if (email) {
+    }else if (email) {
       const users = await User.findOne({ email: email });
 
       /*   const {email, username, role, _id, created, profilePhoto } = users;   */
@@ -354,15 +356,23 @@ exports.editUser = async (req, res, next) => {
   try {
     let user = await User.findOne({ username: req.params.username });
     user.role = req.body.role;
+    if(req.body.email){
+      user.email = req.body.email;
+    }
+    if(req.body.ban){
+      user.ban = req.body.ban;
+    } 
     await user.save();
     res.json(user);
   } catch (error) {
     next(error);
   }
 };
+
 exports.deleteUser = async (req, res, next) => {
   try {
     const user = await User.findOne({ username: req.params.username });
+    
     await User.deleteOne({ _id: user._id });
     res.json('Delete User Successfully');
   } catch (error) {

@@ -10,12 +10,16 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
+
 import { useHistory, useParams } from "react-router-dom";
 import { getUserByUsername, editUser } from "../../controllers/users";
+import { set } from "lodash";
 
 const initialValue = {
   username: "",
+  email:"",
   role: "",
+  ban:false
 };
 
 const useStyles = makeStyles({
@@ -30,17 +34,17 @@ const useStyles = makeStyles({
 
 const EditUser = () => {
   const [user, setUser] = useState(initialValue);
-  const { username, role } = user;
+  const { username, role, email, ban } = user;
   const { id } = useParams();
   const classes = useStyles();
   let history = useHistory();
-
   useEffect(() => {
     loadUserDetails();
   }, []);
-
+ 
   const loadUserDetails = async () => {
     const response = await getUserByUsername(id);
+    
     setUser(response.data);
   };
 
@@ -48,24 +52,39 @@ const EditUser = () => {
     await editUser(id, user);
     history.push("../");
   };
-
   const onValueChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+   
+    setUser({ ...user, [e.target.name]: e.target.value,[e.target.email]: e.target.value });
   };
-
+  const onValueChangeBan = (e) =>{
+    if(e.target.value === 'true'){
+      setUser({...user,[e.target.name]:true});
+    }else{
+      setUser({...user,[e.target.name]:false});
+    }
+  }
   return (
     <FormGroup className={classes.container}>
       <Typography variant="h4">Edit Information</Typography>
       <FormControl>
         <InputLabel htmlFor="my-input">Username</InputLabel>
         <Input
-          disabled="false"
-          onChange={(e) => onValueChange(e)}
+          disabled   
           name="username"
           value={username}
           id="my-input"
           aria-describedby="my-helper-text"
         />
+      </FormControl>
+      <FormControl>
+        <InputLabel htmlFor="my-input">Email</InputLabel>
+       <Input            
+          name="email"
+          onChange={(e) => onValueChange(e)}
+          value={""+ email ? email : ''}
+          id="my-input"
+          aria-describedby="my-helper-text"
+        />              
       </FormControl>
       <FormControl>
         <InputLabel htmlFor="my-input">Role</InputLabel>
@@ -77,7 +96,21 @@ const EditUser = () => {
           aria-describedby="my-helper-text"
         >
           <MenuItem value={"user"}>User</MenuItem>
+          <MenuItem value={"checker"}>checker</MenuItem>
           <MenuItem value={"admin"}>Admin</MenuItem>
+        </Select>
+      </FormControl>
+      <FormControl>
+        <InputLabel htmlFor="my-input">Ban</InputLabel>
+        <Select
+          onChange={(e) => onValueChangeBan(e)}
+          name="ban"
+          value={ban}
+          id="my-input"
+          aria-describedby="my-helper-text"
+        >        
+          <MenuItem value={"true"}>True</MenuItem>
+          <MenuItem value={"false"}>False</MenuItem>
         </Select>
       </FormControl>
       <FormControl>

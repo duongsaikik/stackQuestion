@@ -18,7 +18,6 @@ import { Spinner } from '../../components/icons'
 const QuestionDetail = ({ questionId, title }) => {
   const [question, setQuestion] = useState(null)
   const [idOwner,setIdOwner] = useState(null);
-  const [checkQt,setCheckQt] = useState(false);
   const [answerSortType, setAnswersSortType] = useState('Votes')
 
   useEffect(() => {
@@ -26,7 +25,7 @@ const QuestionDetail = ({ questionId, title }) => {
       const { data } = await publicFetch.get(`/question/${questionId}`)
       setQuestion(data);
       setIdOwner(data.author.id);
-      setCheckQt(data.check)
+
      
     
     }

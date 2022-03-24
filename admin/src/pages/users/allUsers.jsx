@@ -4,7 +4,7 @@ import { Button, makeStyles } from "@material-ui/core";
 import {
   getUsersOfCurrentPage,
   deleteUser,
-  getAllUsers,
+  getAllUsers
 } from "../../controllers/users";
 import { Link } from "react-router-dom";
 import { faSortUp } from "@fortawesome/free-solid-svg-icons";
@@ -93,10 +93,12 @@ const AllUsers = () => {
       search: searchTerm
     });
   },[searchTerm])
+
+
   const deleteUserFunction = async (id) => {
     window.confirm("Are you sure about that?");
     await deleteUser(id);
-    alert("Xóa thành công!!!");
+    alert("Delete successfully!!!");
     getAllUsers().then((res) => setAllUsers(res.data));
     getUsersOfCurrentPage(query.pageNumber, query.sort, query.search).then((res) => {
       setUsersOfCurrentPage(res.data.users);
@@ -300,6 +302,7 @@ const AllUsers = () => {
                   >
                     Edit
                   </Button>{" "}
+                
                   {/* change it to user.id to use JSON Server */}
                   <Button
                     color="secondary"

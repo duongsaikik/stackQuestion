@@ -6,6 +6,7 @@ import AddQuestion from "./pages/questions/addQuestion";
 import AllComments from "./pages/comments/allComments";
 import AddComment from "./pages/comments/addComment";
 import AllAnswers from "./pages/answers/allAnswers";
+import AllCensorship from "./pages/censorship/allCensorship";
 import Login from "./pages/login/login.jsx";
 import NavBar from "./pages/NavBar";
 import NotFound from "./pages/NotFound";
@@ -37,6 +38,7 @@ function App() {
             <PrivateRoute exact path="/comments/add" component={AddComment} />
             <PrivateRoute exact path="/answers/:question" component={AllAnswers} />
             <PrivateRoute exact path="/answers/add" component={AddComment} />
+            <PrivateRoute exact path="/censorship" component={AllCensorship} />
             <Redirect exact from="/logout" to="/login" />
             <Route component={NotFound} />
           </Switch>

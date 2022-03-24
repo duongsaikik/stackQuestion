@@ -205,7 +205,9 @@ exports.findQuestion = async (req, res, next) => {
          return res.status(200).json({data: result});      
     }); */
     //
+    
     if (keyWord) {
+      console.log(keyWord)
       var filter = {};
       var f = {};   
         filter.title = new RegExp(fullTextSearchVi(keyWord), "i")  
@@ -229,13 +231,49 @@ exports.findQuestion = async (req, res, next) => {
         data: dataInPer
       });
      }
-     
-       
+    
     }
+  
+      const questions = await Question.find();
+      const { dataInPer, pagePer } = getPagination(page, size, questions);
+      return res.status(200).json({
+        currentPage: Number(page),
+        pageNum: pagePer,
+        data: dataInPer
+      });
+    
   } catch (error) {
     return next(error);
   }
+  
 }
+
+
+exports.updateQuestionStatus = async (req, res, next) => {
+  if (!req.body) {
+    return res.status(400).send({
+      message: 'Data to update can not be empty!'
+    });
+  }
+
+  console.log(req.params);
+
+  const id = req.params.id;
+
+  Question.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+    .then((data) => {
+      console.log(req.body);
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found!`
+        });
+      } else res.send({ message: 'Tutorial was updated successfully.' });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 exports.questionValidate = [
   body('title')
     .exists()

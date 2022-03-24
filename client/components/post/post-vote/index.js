@@ -99,7 +99,7 @@ const PostVote = ({
         id === authState.userInfo.id
           ? check
             ? checkAnswer
-              ? <Button className={cn(styles.voteButton,styles.situation)}>
+              ? <Button className={cn(styles.voteButton,styles.situation,styles.checkBtn)}>
                 <CheckIcon className={styles.checkVote} />
               </Button>
               : ''

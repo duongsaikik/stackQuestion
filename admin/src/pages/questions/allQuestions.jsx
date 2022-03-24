@@ -21,6 +21,7 @@ import { faSortDown } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FetchContext } from "../../context/fetch";
+import axios from "axios";
 const useStyles = makeStyles({
   table: {
     width: "90%",
@@ -52,11 +53,29 @@ const AllQuestions = () => {
   const classes = useStyles();
   const [questionsOfCurrentPage, setQuestionsOfCurrentPage] = useState([]);
   const [allQuestions, setAllQuestions] = useState([]);
-  const [searchTerm, setSearchTerm] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [query, setQuery] = useState({ pageNumber: 0, sort: "" });
 
   const [totalPages, setTotalPages] = useState([]);
   const pages = new Array(totalPages).fill(null).map((v, i) => i);
+  const qt_content = {
+    wordBreak: 'break-word',
+    whiteSpace: 'pre-wrap',
+    overflow: 'hidden',
+    WebkitLineClamp: 4,
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    textAlign : 'left'
+     
+  }
+  const qt_title = {
+    wordBreak: 'break-word',
+    whiteSpace: 'pre-wrap',
+    overflow: 'hidden',
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: 'vertical',
+     textAlign : 'left'
+  }
   const previous = () => {
     setQuery({
       pageNumber: Math.max(0, query.pageNumber - 1),
@@ -93,20 +112,28 @@ const AllQuestions = () => {
   }, [query]);
 
   useEffect(() => {
-    setQuestionsOfCurrentPage(
-      allQuestions.filter((val) => {
-        if (searchTerm.toString() === "") {
-          return val;
-        } else if (
-          val.title
-            .toString()
-            .toLowerCase()
-            .includes(searchTerm.toString().toLowerCase())
-        ) {
-          return val;
-        }
-      })
-    );
+    var request = {
+      params: {
+        requestType:'Newest',
+        page: 1,
+        size: 15
+      }
+    }
+
+    const fetchQt = async () =>{
+        if(searchTerm){
+          const { data } = await axios.get(`${usersUrl}/question/find/${searchTerm}`,request)
+          setQuestionsOfCurrentPage(data.data);
+          setTotalPages(data.pageNum);
+        }else{
+          const { data } = await axios.get(`${usersUrl}/question`,request)        
+          setQuestionsOfCurrentPage(data.data);
+          setTotalPages(data.pageNum);  
+        }                 
+    }
+    fetchQt();
+    
+  
   }, [searchTerm]);
   const deleteQuestionFunction = async (id) => {
     window.confirm("Are you sure about that?");
@@ -301,11 +328,11 @@ const AllQuestions = () => {
               <tr className={classes.row} key={question.id}>
                 <th>{i + 1}</th>
                 <td
-                  style={{ wordBreak: "break-word" }}
+                  style={qt_title}
                   dangerouslySetInnerHTML={{ __html: question.title }}
                 ></td>
                 <td
-                  style={{ wordBreak: "break-word" }}
+                  style={qt_content}
                   dangerouslySetInnerHTML={{ __html: question.text }}
                 ></td>
                 <td>{question.author.username}</td>
