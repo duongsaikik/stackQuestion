@@ -183,11 +183,57 @@ const AllUsers = () => {
               <TableCell align="center">No.</TableCell>
               <TableCell align="center">
                 Username
-
+                <div class="btn-group-vertical">
+                  <button
+                    class="sort"
+                    onClick={() =>
+                      setQuery({
+                        pageNumber: query.pageNumber,
+                        sort: "-username",
+                      })
+                    }
+                  >
+                    <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
+                  </button>
+                  <button
+                    class="sort"
+                    onClick={() =>
+                      setQuery({ pageNumber: query.pageNumber, sort: "username" })
+                    }
+                  >
+                    <FontAwesomeIcon
+                      icon={faSortDown}
+                      className={"downarrow"}
+                    />
+                  </button>
+                </div>
               </TableCell>
               <TableCell align="center">
                 Email
-
+                <div class="btn-group-vertical">
+                  <button
+                    class="sort"
+                    onClick={() =>
+                      setQuery({
+                        pageNumber: query.pageNumber,
+                        sort: "-email",
+                      })
+                    }
+                  >
+                    <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
+                  </button>
+                  <button
+                    class="sort"
+                    onClick={() =>
+                      setQuery({ pageNumber: query.pageNumber, sort: "email" })
+                    }
+                  >
+                    <FontAwesomeIcon
+                      icon={faSortDown}
+                      className={"downarrow"}
+                    />
+                  </button>
+                </div>
               </TableCell>
               <TableCell align="center">
                 Role
@@ -248,7 +294,7 @@ const AllUsers = () => {
                 </div>
               </TableCell>
               <TableCell align="center">Ban</TableCell>
-              <TableCell align="center">Modify</TableCell>
+              <TableCell align="center"></TableCell>
               <TableCell align="center"></TableCell>
               <TableCell align="center"></TableCell>
             </TableRow>

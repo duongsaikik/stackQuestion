@@ -2,9 +2,7 @@ import AllUsers from "./pages/users/allUsers";
 import AddUser from "./pages/users/addUser";
 import EditUser from "./pages/users/editUser";
 import AllQuestions from "./pages/questions/allQuestions";
-import AddQuestion from "./pages/questions/addQuestion";
 import AllComments from "./pages/comments/allComments";
-import AddComment from "./pages/comments/addComment";
 import AllAnswers from "./pages/answers/allAnswers";
 import AllCensorship from "./pages/censorship/allCensorship";
 import Login from "./pages/login/login.jsx";
@@ -15,16 +13,14 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { AuthProvider } from "./context/auth";
 import { FetchProvider } from "./context/fetch";
 import Header from "./pages/header";
-import PrivateRoute from './components/privateRoute'
+import PrivateRoute from "./components/privateRoute";
 function App() {
   return (
     <AuthProvider>
-      
       <FetchProvider>
-        
         <BrowserRouter>
-        <Redirect exact from="/logout" to="/login" />
-        <Header/>
+          
+          <Header />
           <NavBar />
           <Switch>
             <Route exact path="/login" component={Login} />
@@ -33,18 +29,23 @@ function App() {
             <PrivateRoute exact path="/users/add" component={AddUser} />
             <PrivateRoute exact path="/users/edit/:id" component={EditUser} />
             <PrivateRoute exact path="/questions" component={AllQuestions} />
-            <PrivateRoute exact path="/questions/add" component={AddQuestion} />
-            <PrivateRoute exact path="/comments/:question" component={AllComments} />
+            <PrivateRoute
+              exact
+              path="/comments/:question"
+              component={AllComments}
+            />
             <PrivateRoute
               exact
               path="/comments/:question/:answer"
               component={AllComments}
             />
-            <PrivateRoute exact path="/comments/add" component={AddComment} />
-            <PrivateRoute exact path="/answers/:question" component={AllAnswers} />
-            <PrivateRoute exact path="/answers/add" component={AddComment} />
+            <PrivateRoute
+              exact
+              path="/answers/:question"
+              component={AllAnswers}
+            />
             <PrivateRoute exact path="/censorship" component={AllCensorship} />
-           
+            <Redirect exact from="/logout" to="/login" />
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>

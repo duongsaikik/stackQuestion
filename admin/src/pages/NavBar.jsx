@@ -52,7 +52,7 @@ const NavBar = () => {
 
                     <NavLink className="nav__link" to="/censorship" exact>
                       <i className='bx bx-bookmark nav__icon' ></i>
-                      <span className="nav__name">CenSorship</span>
+                      <span className="nav__name">Censorship</span>
                     </NavLink>
                   </>
               }

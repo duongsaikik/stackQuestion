@@ -1,27 +1,26 @@
 import { useState, useEffect, useContext } from "react";
 import moment from "moment";
-import {makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import { getAllAnswers, getAnswersOfPage } from "../../controllers/answers";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../App.css";
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import { Button } from '@mui/material'
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import { Button } from "@mui/material";
 
 import { faSortUp } from "@fortawesome/free-solid-svg-icons";
 import { faSortDown } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FetchContext } from "../../context/fetch";
-import slug from 'slug';
-
+import slug from "slug";
 
 const useStyles = makeStyles({
   table: {
@@ -49,12 +48,12 @@ const AllAnswers = () => {
   const { authAxios } = useContext(FetchContext);
   const usersUrl = "http://localhost:8080/api";
   const { question } = useParams();
-  const questionId = question.split('-').shift()
+  const questionId = question.split("-").shift();
   const title = question
-    ?.substr(question.indexOf('-') + 1)
-    .split('-')
-    .join(' ')
-  console.log(useParams())
+    ?.substr(question.indexOf("-") + 1)
+    .split("-")
+    .join(" ");
+  console.log(useParams());
   const classes = useStyles();
   const [answersOfPage, setAnswersOfPage] = useState([]);
   const [allAnswers, setAllAnswers] = useState([]);
@@ -63,25 +62,23 @@ const AllAnswers = () => {
   const [totalPages, setTotalPages] = useState([]);
   const pages = new Array(totalPages).fill(null).map((v, i) => i);
   const qt_content = {
-    display: '-webkit-box',
-    wordBreak: 'break-word',
-    whiteSpace: 'pre-wrap',
-    overflow: 'hidden',
+    display: "-webkit-box",
+    wordBreak: "break-word",
+    whiteSpace: "pre-wrap",
+    overflow: "hidden",
     WebkitLineClamp: 3,
-    WebkitBoxOrient: 'vertical',
-    textAlign : 'left'
-   
-  }
-  const qt_title = { 
-    wordBreak: 'break-word',
-    whiteSpace: 'pre-wrap',
-    overflow: 'hidden',
+    WebkitBoxOrient: "vertical",
+    textAlign: "left",
+  };
+  const qt_title = {
+    wordBreak: "break-word",
+    whiteSpace: "pre-wrap",
+    overflow: "hidden",
     WebkitLineClamp: 1,
-    WebkitBoxOrient: 'vertical',
-    textAlign : 'left'
-   
-  }
- 
+    WebkitBoxOrient: "vertical",
+    textAlign: "left",
+  };
+
   const previous = () => {
     setQuery({
       pageNumber: Math.max(0, query.pageNumber - 1),
@@ -123,7 +120,7 @@ const AllAnswers = () => {
         if (searchTerm.toString() === "") {
           return val;
         } else if (
-          val.body
+          val.text
             .toString()
             .toLowerCase()
             .includes(searchTerm.toString().toLowerCase())
@@ -147,7 +144,7 @@ const AllAnswers = () => {
   const truncate = (str, n) => {
     return str.length > n ? str.substr(0, n - 1) + " (...)" : str;
   };
-  console.log(answersOfPage)
+  console.log(answersOfPage);
   return (
     <div className="App">
       <h1>ANSWERS MANAGEMENT</h1>
@@ -166,17 +163,13 @@ const AllAnswers = () => {
         </button>
       </form>
       <TableContainer component={Paper}>
-        
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-            <TableCell align="center">
-              No. 
-            
-              </TableCell>
+              <TableCell align="center">No.</TableCell>
               <TableCell align="center">
-              Author 
-              <div class="btn-group-vertical">
+                Author
+                <div class="btn-group-vertical">
                   <button
                     class="sort"
                     onClick={() =>
@@ -203,7 +196,7 @@ const AllAnswers = () => {
                     />
                   </button>
                 </div>
-                </TableCell>
+              </TableCell>
               <TableCell align="center">
                 Text
                 <div class="btn-group-vertical">
@@ -233,9 +226,9 @@ const AllAnswers = () => {
                     />
                   </button>
                 </div>
-                </TableCell>
+              </TableCell>
               <TableCell align="center">
-              Votes
+                Votes
                 <div class="btn-group-vertical">
                   <button
                     class="sort"
@@ -263,9 +256,9 @@ const AllAnswers = () => {
                     />
                   </button>
                 </div>
-                </TableCell>
+              </TableCell>
               <TableCell align="center">
-              Created
+                Created
                 <div class="btn-group-vertical">
                   <button
                     class="sort"
@@ -293,54 +286,73 @@ const AllAnswers = () => {
                     />
                   </button>
                 </div>
-                </TableCell>
-              <TableCell align="center">
-              Comment            
-                </TableCell>
-            
+              </TableCell>
+              <TableCell align="center">Comment</TableCell>
+
               <TableCell align="center"></TableCell>
               <TableCell align="center"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {answersOfPage?.map((row,i) => (
+            {answersOfPage?.map((row, i) => (
               <TableRow
                 key={row.name}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell align="center">{i + 1}</TableCell>
-                <TableCell sx={qt_title} align="center" dangerouslySetInnerHTML={{__html:row.author.username}}></TableCell>
-              
-                <TableCell  align="center" >
-                  <div style={qt_content} dangerouslySetInnerHTML={{__html:row.text}}>
-
-                  </div>
-                </TableCell>
+                <TableCell
+                  sx={qt_title}
+                  align="center"
+                  dangerouslySetInnerHTML={{ __html: row.author.username }}
+                ></TableCell>
 
                 <TableCell align="center">
-                {row.votes.length}
+                  <div
+                    style={qt_content}
+                    dangerouslySetInnerHTML={{ __html: row.text }}
+                  ></div>
                 </TableCell>
-                <TableCell sx={qt_title} align="center">{moment(row.created).format("DD/MM/YYYY hh:mm:ss")}</TableCell>
-                <TableCell align="center">
-                {row.comments.length}
+
+                <TableCell align="center">{row.votes.length}</TableCell>
+                <TableCell sx={qt_title} align="center">
+                  {moment(row.created).format("DD/MM/YYYY hh:mm:ss")}
                 </TableCell>
-              
-              
                 <TableCell align="center">
-                  <Button color="info"  href={`http://localhost:3000/questions/${questionId}-${slug(title)}`}
-                    target="_blank">Detail</Button>
+                  {/* {row.comments.length} */}
+                  <Button
+                    component={Link}
+                    to={`/comments/${questionId}-${slug(title)}/${row.id}`}
+                  >
+                    View
+                  </Button>
                 </TableCell>
-                
+
                 <TableCell align="center">
-                  <Button   color="warning"
-                    onClick={() => deleteAnswerFunction(row.id)}>Delete</Button>
+                  <Button
+                    color="info"
+                    href={`http://localhost:3000/questions/${questionId}-${slug(
+                      title
+                    )}`}
+                    target="_blank"
+                  >
+                    Detail
+                  </Button>
+                </TableCell>
+
+                <TableCell align="center">
+                  <Button
+                    color="warning"
+                    onClick={() => deleteAnswerFunction(row.id)}
+                  >
+                    Delete
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-     
+
       <nav aria-label="Page navigation example" className="pt_outline">
         <ul class="pagination justify-content-center">
           <li class={isFirstPage()}>

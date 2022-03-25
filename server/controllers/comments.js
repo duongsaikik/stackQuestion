@@ -79,7 +79,7 @@ exports.getAllComments = async (req, res, next) => {
     const question = await Question.findById(req.params.question);
     var comments;
     if (req.params.answer) {
-      comments = question.answers.find((answer) => (answer.id = req.params.answer));
+      comments = question.answers.find((answer) => (answer.id = req.params.answer)).comments;
     } else {
       comments = question.comments;
     }

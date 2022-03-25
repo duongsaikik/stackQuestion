@@ -8,7 +8,9 @@ import {
   TableBody,
   Button,
   makeStyles,
+  TableContainer,
 } from "@material-ui/core";
+import Paper from "@mui/material/Paper";
 import { getAllComments, getCommentsOfPage } from "../../controllers/comments";
 import { useParams } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -44,6 +46,11 @@ const AllComments = () => {
   const { authAxios } = useContext(FetchContext);
   const usersUrl = "http://localhost:8080/api";
   const { question, answer } = useParams();
+  const questionId = question.split("-").shift();
+  const title = question
+    ?.substr(question.indexOf("-") + 1)
+    .split("-")
+    .join(" ");
   const classes = useStyles();
   const [commentsOfPage, setCommentsOfPage] = useState([]);
   const [allComments, setAllComments] = useState([]);
@@ -75,12 +82,12 @@ const AllComments = () => {
     return "page-item " + (query.pageNumber === pageNumber ? "active" : "");
   };
   useEffect(() => {
-    getAllComments(question, answer).then((res) => {
+    getAllComments(questionId, answer).then((res) => {
       setAllComments(res.data);
     });
   }, []);
   useEffect(() => {
-    getCommentsOfPage(question, query.pageNumber, query.sort, answer).then(
+    getCommentsOfPage(questionId, query.pageNumber, query.sort, answer).then(
       (res) => {
         setCommentsOfPage(res.data.comments);
         setTotalPages(res.data.totalPages);
@@ -89,6 +96,7 @@ const AllComments = () => {
   }, [query]);
 
   useEffect(() => {
+    console.log(allComments)
     setCommentsOfPage(
       allComments.filter((val) => {
         if (searchTerm.toString() === "") {
@@ -108,20 +116,31 @@ const AllComments = () => {
     window.confirm("Are you sure about that?");
     if (answer) {
       await authAxios.delete(
-        `${usersUrl}/comment/${question}/${answer}/${comment}`
+        `${usersUrl}/comment/${questionId}/${answer}/${comment}`
       );
     } else {
-      await authAxios.delete(`${usersUrl}/comment/${question}/${comment}`);
+      await authAxios.delete(`${usersUrl}/comment/${questionId}/${comment}`);
     }
     alert("Xóa thành công!!!");
-    getAllComments(question).then((res) => setAllComments(res.data));
-    getCommentsOfPage(question, query.pageNumber, query.sort).then((res) => {
-      setCommentsOfPage(res.data.comments);
-      setTotalPages(res.data.totalPages);
-    });
+    getAllComments(questionId).then((res) => setAllComments(res.data));
+    getCommentsOfPage(questionId, query.pageNumber, query.sort, answer).then(
+      (res) => {
+        setCommentsOfPage(res.data.comments);
+        setTotalPages(res.data.totalPages);
+      }
+    );
   };
   const truncate = (str, n) => {
     return str.length > n ? str.substr(0, n - 1) + " (...)" : str;
+  };
+  const qt_content = {
+    display: "-webkit-box",
+    wordBreak: "break-word",
+    whiteSpace: "pre-wrap",
+    overflow: "hidden",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    textAlign: "left",
   };
   return (
     <div className="App">
@@ -140,12 +159,12 @@ const AllComments = () => {
           <FontAwesomeIcon icon={faSearch} />
         </button>
       </form>
-      <div class="table-responsive-xxl">
-        <table class="table table-sm table-bordered table-striped">
-          <thead class="table-dark">
-            <tr className={classes.thead}>
-              <th style={{ width: "5%" }}>No.</th>
-              <th style={{ width: "20%" }}>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center">No.</TableCell>
+              <TableCell align="center">
                 Author{" "}
                 <div class="btn-group-vertical">
                   <button
@@ -174,8 +193,8 @@ const AllComments = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th>
+              </TableCell>
+              <TableCell align="center">
                 Text{" "}
                 <div class="btn-group-vertical">
                   <button
@@ -204,8 +223,8 @@ const AllComments = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th style={{ width: "20%" }}>
+              </TableCell>
+              <TableCell align="center">
                 Created{" "}
                 <div class="btn-group-vertical">
                   <button
@@ -234,21 +253,27 @@ const AllComments = () => {
                     />
                   </button>
                 </div>
-              </th>
-              <th style={{ width: "20%" }}>Modify</th>
-            </tr>
-          </thead>
-          <tbody>
-            {commentsOfPage.map((comment, i) => (
-              <tr className={classes.row} key={comment.id}>
-                <th>{i + 1}</th>
-                <td>{comment.author.username}</td>
-                <td
-                  style={{ wordBreak: "break-word" }}
-                  dangerouslySetInnerHTML={{__html:truncate(comment.body, 70)}}
-                ></td>
-                <td>{moment(comment.created).format("DD/MM/YYYY hh:mm:ss")}</td>
-                <td>
+              </TableCell>
+              <TableCell align="center">Modify</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {commentsOfPage?.map((comment, i) => (
+              <TableRow
+                key={comment.name}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell align="center">{i + 1}</TableCell>
+                <TableCell align="center">{comment.author.username}</TableCell>
+                <TableCell
+                  align="center"
+                  sx={qt_content}
+                  dangerouslySetInnerHTML={{ __html: comment.body }}
+                ></TableCell>
+                <TableCell align="center">
+                  {moment(comment.created).format("DD/MM/YYYY hh:mm:ss")}
+                </TableCell>
+                <TableCell align="center">
                   <Button
                     variant="contained"
                     style={{
@@ -270,13 +295,13 @@ const AllComments = () => {
                     Delete
                   </Button>{" "}
                   {/* change it to user.id to use JSON Server */}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
-      <nav aria-label="Page navigation example">
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <nav aria-label="Page navigation example" className="pt_outline">
         <ul class="pagination justify-content-center">
           <li class={isFirstPage()}>
             <a class="page-link" onClick={previous}>
