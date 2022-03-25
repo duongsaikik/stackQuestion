@@ -10,7 +10,7 @@ const Login = () => {
   const { setAuthState, logout } = useContext(AuthContext);
   const usersUrl = "http://localhost:8080/api";
   return (
-    <div>
+    <div className="popup">
       <div class="container">
         <div class="forms-container">
           <div class="signin-signup">

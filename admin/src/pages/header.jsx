@@ -20,7 +20,7 @@ const Header = () => {
     }
     return (
         <>
-            <header class="header" id="header">
+            <header class="header" id="header" style={{background:"white"}}>
                 <div class="header__toggle">
                     <i class='bx bx-menu' id="header-toggle" onClick={showNavbar}></i>
                 </div>
