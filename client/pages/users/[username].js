@@ -25,7 +25,7 @@ const UserDetail = ({ username }) => {
   return (
     <Layout extra={false}>
       <Head>
-        <title>Users {username} - Clone of Stackoverflow</title>
+        <title>Users {username} - StackQuestion</title>
       </Head>
 
       <UserCard>
@@ -49,7 +49,7 @@ const UserDetail = ({ username }) => {
 
           {posts?.length == 0 && (
             <p className="not-found-questions">
-              Don&apos;t have any questions yet.
+              Chưa có câu hỏi nào.
             </p>
           )}
         </PostList>

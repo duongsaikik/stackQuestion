@@ -3,6 +3,7 @@ const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
 const fullTextSearch = require('fulltextsearch');
 var fullTextSearchVi = fullTextSearch.vi;
+const initialScore = 0;
 const getPagination = (page, size, data) => {
 
   const start = page ? + (page - 1) * size : 0;
@@ -43,6 +44,10 @@ exports.createQuestion = async (req, res, next) => {
       tags,
       text
     });
+     //decrease answers mount
+     const user = await User.findByIdAndUpdate(
+      author, { $inc: { questionsMount: 1, score: initialScore } },
+  );
     res.status(201).json(question);
   } catch (error) {
     next(error);
@@ -197,7 +202,12 @@ exports.getUserReportById = async (req,res,next) =>{
 exports.removeQuestion = async (req, res, next) => {
   try {
     await req.question.remove();
+     //increase answers mount
+     await User.findByIdAndUpdate(
+      req.user.id, { $inc: { questionsMount: -1} },
+  );
     res.json({ message: 'Your question successfully deleted.' });
+  
   } catch (error) {
     next(error);
   }

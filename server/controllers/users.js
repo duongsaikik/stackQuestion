@@ -225,6 +225,7 @@ exports.authenticate = async (req, res) => {
 };
 
 exports.listUsers = async (req, res, next) => {
+ 
   try {
    /*  const { sortType = '-created' } = req.body; */
    const { page, size ,sortType = '-created'} = req.query;
@@ -243,7 +244,9 @@ exports.listUsers = async (req, res, next) => {
 };
 
 exports.search = async (req, res, next) => {
+  
   try {
+   
     const users = await User.find({ username: { $regex: req.params.search, $options: 'i' } });
     const { page, size } = req.query;
     const { dataInPer, pagePer } = getPagination(page, size, users);

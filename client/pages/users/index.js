@@ -80,13 +80,15 @@ function UsersPage() {
       {users && (
         <>
           <UserList>
-            {users?.map(({ username, profilePhoto, created, id }) => (
-              <UserItem
-                key={id}
-                username={username}
-                profilePhoto={profilePhoto}
-                created={created}
-              />
+            {users?.map(({ username, profilePhoto, created, id,role }) => (
+            role !== 'admin' && role !== 'checker'
+            ?   <UserItem
+            key={id}
+            username={username}
+            profilePhoto={profilePhoto}
+            created={created}
+          />
+          :''
             ))}
           </UserList>
 

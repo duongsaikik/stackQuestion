@@ -12,7 +12,7 @@ const TagInput = ({ selectedTags, inputInfo, label, errorMessage }) => {
 	const [itemTag, setItemTag] = useState(null);
 	const [search, setSearch] = useState('');
 	const [err,setErr] = useState(errorMessage);
-	console.log(err)
+
 	
 	
 	const removeTags = (indexToRemove) => {

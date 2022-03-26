@@ -6,7 +6,9 @@ const userModel = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, required: true, default: 'user' },
- 
+  score: { type: Number, default: 0 },
+  questionsMount: { type: Number, default: 0 },
+    answersMount: { type: Number, default: 0 },
   profilePhoto: {
     type: String,
     default: function () {

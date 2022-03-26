@@ -160,7 +160,7 @@ const selectedTags = (tags) => {
                 isLoading={loading}
                 disabled={isSubmitting}
               >
-                Review your question
+                Đăng tải
               </Button>
             </div>
           </div>

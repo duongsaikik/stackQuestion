@@ -1,6 +1,8 @@
 const { body, validationResult } = require('express-validator');
 const Question = require('../models/question');
+const User = require('../models/user');
 const lodash = require('lodash');
+const initialScore = 0;
 exports.loadAnswers = async (req, res, next, id) => {
   try {
     const answer = await req.question.answers.id(id);
@@ -15,21 +17,24 @@ exports.loadAnswers = async (req, res, next, id) => {
 
 exports.createAnswer = async (req, res, next) => {
 
-   const result = validationResult(req);
- 
+  const result = validationResult(req);
+
   if (!result.isEmpty()) {
-   
+
     const errors = result.array({ onlyFirstError: true });
     return res.status(422).json({ errors });
-  } 
+  }
 
   try {
     const { id } = req.user;
     const { text } = req.body;
-  
-     const question = await req.question.addAnswer(id, text);
 
-    res.status(201).json(question); 
+    const question = await req.question.addAnswer(id, text);
+    //increase user answersMount
+    const user = await User.findByIdAndUpdate(
+      id, { $inc: { answersMount: 1, score: initialScore } },
+    );
+    res.status(201).json(question);
   } catch (error) {
     next(error);
   }
@@ -37,9 +42,22 @@ exports.createAnswer = async (req, res, next) => {
 
 exports.removeAnswer = async (req, res, next) => {
   try {
+    
     const { answer } = req.params;
-    const question = await req.question.removeAnswer(answer);
-    res.json(question);
+   
+    const user = await User.findById(req.user.id);
+   
+     user.answersMount -=1;
+ 
+    
+       //decrease user answer mount
+      /*  await User.findByIdAndUpdate(
+        req.user.id, { $inc: { answersMount: -1, score: -req.question.answers.score } },
+    ); */
+ 
+      const question = await req.question.removeAnswer(answer);
+    user.save();
+    res.json(question);   
   } catch (error) {
     next(error);
   }

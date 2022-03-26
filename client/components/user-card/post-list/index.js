@@ -8,12 +8,12 @@ const PostList = ({ postType, setPostType, children }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Last Questions</h2>
-        <ButtonGroup
+        <h2>Câu hỏi</h2>
+       {/*  <ButtonGroup
           buttons={['Questions']}
           selected={postType}
           setSelected={setPostType}
-        />
+        /> */}
       </div>
       {children}
     </div>

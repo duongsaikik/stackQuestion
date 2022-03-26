@@ -11,20 +11,21 @@ import styles from './avatar-card.module.css'
 const UserAvatar = ({ username }) => {
   const [userInfo, setUserInfo] = useState(null)
 
-  useEffect(() => {
-    var request = {
-      params :{
-        username: username
+
+    useEffect(() => {
+      var request = {
+        params :{
+          username: username
+        }
       }
-    }
-    const fetchUser = async () => {
-      const { data } = await publicFetch.get(`/user/find`,request)
-      setUserInfo(data)
-    }
-
-    fetchUser()
+      const fetchUser = async () => {
+        const { data } = await publicFetch.get(`/user/find`,request)
+        setUserInfo(data)
+      }
+  
+      fetchUser()
   }, [username])
-
+  
   return (
     <div>
       <div className={styles.avatarCard}>
@@ -52,7 +53,67 @@ const UserAvatar = ({ username }) => {
         ) : (
           <div className={styles.created}>
             <p>
-              Created:{' '}
+            Câu hỏi:{' '}
+              {(userInfo.questionsMount==undefined) ? (
+                <Spinner />
+              ):(
+                  <span>
+                  {userInfo.questionsMount}
+                  </span>
+              )}
+              
+            </p>
+          </div>
+        )}
+
+        {!userInfo ? (
+          <div className="loading">
+            <Spinner />
+          </div>
+        ) : (
+          <div className={styles.created}>
+            <p>
+            Trả lời:{' '}
+              {(userInfo.answersMount == undefined) ? (
+                <Spinner />
+              ):(
+                  <span>
+                  {userInfo.answersMount}
+                  </span>
+              )}
+              
+            </p>
+          </div>
+        )}
+
+        {!userInfo ? (
+          <div className="loading">
+            <Spinner />
+          </div>
+        ) : (
+          <div className={styles.created}>
+            <p>
+            Độ uy tín:{' '}
+              {(userInfo.score == undefined) ? (
+                <Spinner />
+              ):(
+                  <span>
+                  {userInfo.score}
+                  </span>
+               )}
+              
+            </p>
+          </div>
+        )}
+
+        {!userInfo ? (
+          <div className="loading">
+            <Spinner />
+          </div>
+        ) : (
+          <div className={styles.created}>
+            <p>
+              Thời gian tạo:{' '}
               <span>
                 {formatDistanceToNowStrict(new Date(userInfo.created), {
                   addSuffix: true
@@ -66,4 +127,4 @@ const UserAvatar = ({ username }) => {
   )
 }
 
-export default UserAvatar
+export default UserAvatar;
