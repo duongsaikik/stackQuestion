@@ -115,9 +115,7 @@ const Header = ({ className, ...props }) => {
         </div>
         <Button className={styles.logo} href="/">
           <Logo />
-          <p>
-            ss<span>overflow</span>
-          </p>
+          
         </Button>
         <div className={styles.search_qt} style={{ flex: 1, marginRight: 5, marginLeft: 5 }}>
 
@@ -140,7 +138,7 @@ const Header = ({ className, ...props }) => {
         {isAuthenticated() ? (
           <div className={styles.userInfo}>
             <p>
-              Welcome{' '}
+              Chào mừng{' '}
               <Link
                 href="/users/[user]"
                 as={`/users/${authState.userInfo.username}`}
@@ -148,7 +146,7 @@ const Header = ({ className, ...props }) => {
                 <a>{authState.userInfo.username}!</a>
               </Link>
             </p>
-            <a onClick={() => logout()}>log out</a>
+            <a onClick={() => logout()}>Đăng xuất</a>
           </div>
         ) : (
           <>
@@ -157,14 +155,14 @@ const Header = ({ className, ...props }) => {
               secondary
               onClick={() => handleComponentVisible(true, 'login')}
             >
-              Log in
+              Đăng nhập
             </Button>
             <Button
               className={cn(styles.auth, styles.authRe)}
               primary
               onClick={() => handleComponentVisible(true, 'signup')}
             >
-              Sign up
+              Đăng ký
             </Button>
           </>
         )}

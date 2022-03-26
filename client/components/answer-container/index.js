@@ -14,7 +14,7 @@ const AnswerContainer = ({
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.fill}>
-          <h2>{answerCount} Answers</h2>
+          <h2>{answerCount} Trả lời</h2>
         </div>
         <ButtonGroup
           buttons={['Votes', 'Newest', 'Oldest']}

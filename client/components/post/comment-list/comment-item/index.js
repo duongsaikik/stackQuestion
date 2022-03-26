@@ -47,7 +47,7 @@ const CommentItem = ({
       </p>
       {(authState.userInfo?.username === author || isAdmin()) && (
         <a className={styles.delete} onClick={() => handleDeleteComment()}>
-          delete
+          Xoá
         </a>
       )}
     </div>

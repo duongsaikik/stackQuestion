@@ -52,18 +52,16 @@ function TagsPage() {
   return (
     <Layout extra={false}>
       <Head>
-        <title>Tags - Clone of Stackoverflow</title>
+        <title>Tags - StackQuestions</title>
         <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet' />
       </Head>
 
       <PageTitle title="Tags" borderBottom={false}>
-        A tag is a keyword or label that categorizes your question with other,
-        similar questions. Using the right tags makes it easier for others to
-        find and answer your question.
+        Sử dụng những tag ở dưới để có thể xem các câu hỏi thuộc các chủ đề khác nhau nhanh hơn
       </PageTitle>
       
       <SearchInput
-        placeholder="Filter by tag name"
+        placeholder="Tên tag"
         autoFocus
         isLoading={loading}
         autoComplete="off"
@@ -87,7 +85,7 @@ function TagsPage() {
             ))}
           </TagList>
 
-          {tags.length == 0 && <p className="not-found">No tags matched your search.</p>}
+          {tags.length == 0 && <p className="not-found">Tag không tồn tại</p>}
         </>
       )}
        <Panginations currentPage={currentPage} totalPage={totalPage} />

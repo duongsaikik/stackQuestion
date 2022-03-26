@@ -36,6 +36,7 @@ exports.createQuestion = async (req, res, next) => {
     const { title, tags, text } = req.body;
       console.log(tags)
     const author = req.user.id;
+    console.log(author)
     const question = await Question.create({
       title,
       author,
@@ -66,14 +67,16 @@ exports.show = async (req, res, next) => {
 exports.listQuestions = async (req, res, next) => {
   try {
     const { sortType = '-created' } = req.body;
-    const { page, size,requestType } = req.query;
-    
+    const { page, size,requestType = 'Newest' } = req.query;
+   
     if(requestType){
       switch (requestType) {
         case 'Votes':
           {
+           
             const questions = await Question.find().sort('-score');
                 const { dataInPer, pagePer } = getPagination(page, size, questions);
+              
                 return  res.json({
                   currentPage: Number(page),
                   pageNum: pagePer,
@@ -108,11 +111,24 @@ exports.listQuestions = async (req, res, next) => {
                 });
            
               }
+              case 'Newest':
+                {
+                  const questions = await Question.find().sort('-created');
+                              
+                  const { dataInPer, pagePer } = getPagination(page, size, questions);
+                  return  res.json({
+                    currentPage: Number(page),
+                    pageNum: pagePer,
+                    data: dataInPer
+                  });
+             
+                }
              
         default:
           {
-            const questions = await Question.find().sort(sortType);
-                const { dataInPer, pagePer } = getPagination(page, size, questions);               
+            const questions = await Question.find().sort(requestType);
+              
+                const { dataInPer, pagePer } = getPagination(page, size, questions);            
                 return  res.json({
                   currentPage: Number(page),
                   pageNum: pagePer,
@@ -160,7 +176,24 @@ exports.listByUser = async (req, res, next) => {
     next(error);
   }
 };
-
+exports.getUserReportById = async (req,res,next) =>{
+  try {
+    const {id} = req.params;
+    
+    const {page,size} = req.query;
+ 
+    const question = await Question.findById(id);
+   
+    const { dataInPer, pagePer } = getPagination(page, size, question.report);
+    res.json({
+      currentPage: Number(page),
+      pageNum: pagePer,
+      data: dataInPer
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 exports.removeQuestion = async (req, res, next) => {
   try {
     await req.question.remove();
@@ -259,7 +292,7 @@ exports.updateQuestionStatus = async (req, res, next) => {
   console.log(req.params);
 
   const id = req.params.id;
-
+  console.log(req.body)
   Question.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then((data) => {
       console.log(req.body);
@@ -274,6 +307,24 @@ exports.updateQuestionStatus = async (req, res, next) => {
     });
 };
 
+exports.getAllReport = async (req, res) =>{
+  const { page, size } = req.query;
+    Question.find()
+   .then((all) =>{
+     let qt = all.filter(
+       (item) =>
+     
+       (item.report.length > 0)
+     );
+      
+     const { dataInPer, pagePer } = getPagination(page, size, qt);
+     return res.status(200).json({
+       currentPage: Number(page),
+       pageNum: pagePer,
+       data: dataInPer
+     });
+   })
+}
 exports.questionValidate = [
   body('title')
     .exists()
@@ -300,7 +351,7 @@ exports.questionValidate = [
   body('tags').exists().withMessage('is required')
 ];
 exports.getQuestionsOfCurrentPage = async (req, res) => {
-  const PAGE_SIZE = 5;
+  const PAGE_SIZE = parseInt(req.query.size || '0');
   const page = parseInt(req.query.page || '0');
   const sort = req.query.sort || '';
   try {
@@ -309,7 +360,12 @@ exports.getQuestionsOfCurrentPage = async (req, res) => {
       .sort(sort)
       .limit(PAGE_SIZE)
       .skip(PAGE_SIZE * page);
-    res.status(200).json({ totalPages: Math.ceil(total / PAGE_SIZE), questions });
+    res.status(200).json(
+      {  
+        currentPage: Number(page),
+        pageNum: Math.ceil(total / PAGE_SIZE),
+        data: questions
+      });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

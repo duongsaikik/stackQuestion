@@ -71,7 +71,7 @@ const QuestionDetail = ({ questionId, title }) => {
                 votes={question.votes}
                 questionId={questionId}
                 setQuestion={setQuestion}
-
+                report={question.report}
               />
               <PostSummary
                 tags={question.tags}

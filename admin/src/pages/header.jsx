@@ -1,7 +1,7 @@
 import React from "react";
 
 const Header = () => {
-    const showNavbar = (toggleId, navId, bodyId, headerId) => {
+const showNavbar = (toggleId, navId, bodyId, headerId) => {
         const toggle = document.getElementById('header-toggle'),
          nav = document.getElementById('nav-bar'),
             bodypd = document.getElementById('body-pd'),

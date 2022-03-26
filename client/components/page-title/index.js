@@ -21,7 +21,7 @@ const PageTitle = ({ title, button, borderBottom = true, children }) => {
               href={isAuthenticated() ? '/questions/ask' : '/auth'}
               primary
             >
-              Ask Question
+              Đặt Câu Hỏi
             </Button>
           )}
         </div>

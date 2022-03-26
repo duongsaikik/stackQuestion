@@ -15,7 +15,7 @@ import { useHistory } from "react-router-dom";
 
 const initialValue = {
   username: "",
-  email:"",
+  email: "",
   role: "",
 };
 
@@ -31,17 +31,24 @@ const useStyles = makeStyles({
 
 const AddUser = () => {
   const [user, setUser] = useState(initialValue);
-  const { username, role ,email} = user;
+  const { username, role, email } = user;
   const classes = useStyles();
   let history = useHistory();
 
   const onValueChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value ,[e.target.email]: e.target.value });
+    setUser({ ...user, [e.target.name]: e.target.value, [e.target.email]: e.target.value });
   };
 
   const Add = async () => {
-    await addUser(user);
-    history.push("./");
+    try {
+      await addUser(user);
+      history.push("./");
+    } catch (error) {
+      console.log(error.response.data.message)
+      alert("Email or username has already exists")
+    }
+
+  
   };
 
   return (
@@ -58,13 +65,13 @@ const AddUser = () => {
       </FormControl>
       <FormControl>
         <InputLabel htmlFor="my-input">Email</InputLabel>
-       <Input            
+        <Input
           name="email"
           onChange={(e) => onValueChange(e)}
           value={email}
           id="my-input"
           aria-describedby="my-helper-text"
-        />              
+        />
       </FormControl>
       <FormControl>
         <InputLabel htmlFor="my-input">Role</InputLabel>
@@ -74,9 +81,9 @@ const AddUser = () => {
           value={role}
           id="my-input"
         >
-        <MenuItem value={"user"}>User</MenuItem>
-        <MenuItem value={"checker"}>checker</MenuItem>
-        <MenuItem value={"admin"}>Admin</MenuItem>
+          <MenuItem value={"user"}>User</MenuItem>
+          <MenuItem value={"checker"}>checker</MenuItem>
+          <MenuItem value={"admin"}>Admin</MenuItem>
         </Select>
       </FormControl>
 

@@ -6,6 +6,11 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import { Link } from "react-router-dom";
+
+import Pangination from "../../components/pangination/index";
+import {useRouter} from "../../components/pangination/useRouter";
+import { useParams } from 'react-router-dom'
 
 /* import { Spinner } from '../components/icons' */
 import { Button } from '@mui/material'
@@ -17,6 +22,11 @@ import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
 import axios from "axios";
+import { faSortUp } from "@fortawesome/free-solid-svg-icons";
+import { faSortDown } from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FetchContext } from "../../context/fetch";
 import '../censorship/allCensorship.css';
 
 const style = {
@@ -57,6 +67,15 @@ const qt_tag = {
   textAlign: 'left'
 
 }
+const qt_created = {
+  wordBreak: 'break-word',
+  whiteSpace: 'pre-wrap',
+  overflow: 'hidden',
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: 'vertical',
+  textAlign: 'left'
+
+}
 const qt_itemTag = {
   padding: '4px',
   background: 'darkturquoise',
@@ -66,7 +85,12 @@ const qt_itemTag = {
   margin: '2px'
 
 }
+const withTable = {
+    minWidth: '750px',
+}
 const AllCensorship = () => {
+
+  const router = useRouter();
 
   const [open, setOpen] = React.useState(false)
   const [_status, setStatus] = React.useState()
@@ -74,15 +98,29 @@ const AllCensorship = () => {
   const [questionId, setQuestionId] = useState()
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState()
+
+  const [query, setQuery] = useState({ pageNumber: 0, sort: "", search: "" });
+  const [questionsOfCurrentPage, setQuestionsOfCurrentPage] = useState([]);
+  const [totalPages, setTotalPages] = useState([]);
+
   const usersUrl = "http://localhost:8080/api";
   const handleChange = (event) => {
     setSelectedTag(event.target.value)
-  }
+}
 
-  const fetchQuestion = async () => {
-    const { data } = await axios.get(`${usersUrl}/question`)
+  const fetchQuestion = async (size) => {
+    var request = {
+      params: {   
+        requestType: query.sort,   
+        page:size? size : router.query.pagee ? router.query.pagee : 1,
+        size: 15
+      }
+    }
+    const { data } = await axios.get(`${usersUrl}/question`,request)
     console.log(data)
     setQuestions(data.data)
+    setQuestionsOfCurrentPage(data.currentPage)
+    setTotalPages(data.pageNum);
   }
 
   const fetchQuestionByTag = async () => {
@@ -101,7 +139,8 @@ const AllCensorship = () => {
     const { data } = await axios.put(`${usersUrl}/question/` + questionId, {
       _status: _status
     })
-
+    setStatus('')
+    fetchQuestion(1);
   }
 
   const handleModal = (id) => {
@@ -111,7 +150,8 @@ const AllCensorship = () => {
 
   useEffect(() => {
     if (_status) {
-      updateQuestionStatus()
+       updateQuestionStatus()
+     
     }
   }, [_status])
 
@@ -126,11 +166,13 @@ const AllCensorship = () => {
   useEffect(() => {
     fetchQuestion()
 
-  }, [open])
+  }, [router,query])
 
   useEffect(() => {
     fetchTags()
-  }, [])
+  }, [router])
+
+ 
 
   return (
     <div>
@@ -181,14 +223,72 @@ const AllCensorship = () => {
       </Box>
       <TableContainer component={Paper}>
 
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={withTable} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="center">Title</TableCell>
+              <TableCell align="center">
+                Title
+                <div class="btn-group-vertical">
+                    <button
+                      className="sort"
+                      onClick={() =>
+                        setQuery({
+                          pageNumber: query.pageNumber,
+                          sort: "-title",
+                        })
+                      }
+                    >
+                      <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
+                    </button>
+                    <button
+                      className="sort"
+                      onClick={() =>
+                        setQuery({
+                          pageNumber: query.pageNumber,
+                          sort: "title",
+                        })
+                      }
+                    >
+                      <FontAwesomeIcon
+                        icon={faSortDown}
+                        className={"downarrow"}
+                      />
+                    </button>
+                  </div>
+                </TableCell>
               <TableCell align="center">Text</TableCell>
               <TableCell align="center">Tags</TableCell>
-              <TableCell align="center">created</TableCell>
-              <TableCell align="center">author</TableCell>
+              <TableCell align="center">
+                Created
+                <div class="btn-group-vertical">
+                    <button
+                      className="sort"
+                      onClick={() =>
+                        setQuery({
+                          pageNumber: query.pageNumber,
+                          sort: "-created",
+                        })
+                      }
+                    >
+                      <FontAwesomeIcon icon={faSortUp} className={"uparrow"} />
+                    </button>
+                    <button
+                      className="sort"
+                      onClick={() =>
+                        setQuery({
+                          pageNumber: query.pageNumber,
+                          sort: "created",
+                        })
+                      }
+                    >
+                      <FontAwesomeIcon
+                        icon={faSortDown}
+                        className={"downarrow"}
+                      />
+                    </button>
+                  </div>
+                </TableCell>
+              <TableCell align="center">Author</TableCell>
               <TableCell align="center">Status</TableCell>
               <TableCell align="center">Action</TableCell>
             </TableRow>
@@ -210,10 +310,10 @@ const AllCensorship = () => {
                     {item}
                   </span>
                 })}</TableCell>
-                <TableCell align="center">{row.created}</TableCell>
+                <TableCell sx={qt_created} align="center">{row.created}</TableCell>
                 <TableCell align="center">{row.author.username}</TableCell>
                 <TableCell align="center">
-                  {row._status === 'done' && (
+                  {row._status === 'accept' && (
                     <Button  color="success">
                       {row._status}
                     </Button>
@@ -230,15 +330,22 @@ const AllCensorship = () => {
                   )}
                 </TableCell>
                 <TableCell align="center">
-                  <Button onClick={() => handleModal(row.id)}>Duyệt</Button>
+                  {
+                    row._status === 'accept' || row._status === 'deny'
+                    ? ''
+                    : <Button onClick={() => handleModal(row.id)}>Approve</Button>
+                  }
+                  
                 </TableCell>
               </TableRow>
             )) : ''}
           </TableBody>
         </Table>
       </TableContainer>
-
+     
+     <Pangination currentPage={questionsOfCurrentPage} totalPage={totalPages}/>
     </div>
+   
   )
 }
 export default AllCensorship;

@@ -31,7 +31,7 @@ exports.createComment = async (req, res, next) => {
   try {
     const { id } = req.user;
     const { comment } = req.body;
-
+    console.log(id)
     if (req.params.answer) {
       req.answer.addComment(id, comment);
       const question = await req.question.save();
@@ -47,7 +47,7 @@ exports.createComment = async (req, res, next) => {
 
 exports.removeComment = async (req, res, next) => {
   const { comment } = req.params;
-
+  console.log(comment)
   try {
     if (req.params.answer) {
       req.answer.removeComment(comment);

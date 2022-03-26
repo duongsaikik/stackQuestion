@@ -1,32 +1,40 @@
 import React from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "./useRouter";
+
+
 const Panginations = ({
     currentPage,
     totalPage
 }) =>{
+  const highlight = {
+    backgroundColor: 'green',
+    pointerEvents: 'none',
+    color: 'white'
+  
+}
+const none = {
+
+}
+
     const router = useRouter()
     const range = 5;
     const handlePage = async (e) => {
-    
+      console.log(e)
       const currentPath = router.pathname;
       const currentQuery = router.query;
   
       currentQuery.pagee = e;
-      router.push({
-        pathname: currentPath,
-        query: currentQuery
-      })
+      router.push(`${currentPath}?pagee=${currentQuery.pagee}`)
     }
     const handleChangePage = async (e) => {
       const i = Number(e.target.attributes.num.value);
+      
       const currentPath = router.pathname;
       const currentQuery = router.query;
-  
+    
       currentQuery.pagee = i === 1 ? currentPage - 1 : currentPage + 1;
-      router.push({
-        pathname: currentPath,
-        query: currentQuery
-      })
+
+      router.push(`${currentPath}?pagee=${currentQuery.pagee}`)
     }
     const showPagination = (e) => {
         var page = [];
@@ -49,14 +57,15 @@ const Panginations = ({
           }   
         result = page.length > 0 ? page.map((item, index) => {
         
-          return <li key={index} className={
+          return <li key={index}
+          className='page-link'  style={
             currentPage >= range ? 
           index * 0 + item === currentPage ?
-             'hightLight' :
-              '' :
+             highlight :
+             none :
                index + 1 === currentPage ?
-                'hightLight' : 
-                ''
+               highlight : 
+               none
               } onClick={() => {handlePage(currentPage >= range ?  index * 0 + item : index + 1 )}}>{item}</li>
         })
           : '';
@@ -65,11 +74,14 @@ const Panginations = ({
          
     return(
         <>
+        
          { totalPage > 1 ?
-        <div className="pagein_body">
-          <div className="inside">
+        <nav aria-label="Page navigation example" className="pt_outline">
+           <ul className="pagination justify-content-center">
             {
-              currentPage === 1 || currentPage === 0 ? '' : <i className='bx bx-chevrons-left' num="1" onClick={handleChangePage}></i>
+              currentPage === 1 || currentPage === 0 ? '' : <a class="page-link" num='1' onClick={handleChangePage} >
+              Previous
+            </a>
             }
             {
               totalPage > range ? currentPage  > range - 1  ? <span className='more_page' onClick={() => handlePage(1)}>1</span>:'':''
@@ -77,11 +89,11 @@ const Panginations = ({
             {
               totalPage > range ? currentPage  > range - 1 ? <span className='more_page'>...</span>:'':''
             }
-            <ul className="paginationBttns">
+           
               {
                 showPagination(totalPage)
               }
-            </ul>
+           
             {
               totalPage > range ?  currentPage + 2 < totalPage ? <span className='more_page'>...</span>:'':''
             }
@@ -89,11 +101,13 @@ const Panginations = ({
               totalPage > range ? currentPage + 2 < totalPage ? <span className='totalPage more_page' onClick={() => handlePage(totalPage)}>{totalPage}</span>:'':''
             }
             {            
-              currentPage === totalPage || totalPage === 0 ? '' : <i className='bx bx-chevrons-right' num="2" onClick={handleChangePage}></i>
+              currentPage === totalPage || totalPage === 0 ? '' :  <a class="page-link" num='2' onClick={handleChangePage}>
+              Next
+            </a>
             }
-
-          </div>
-        </div>
+ </ul>
+          </nav>
+    
         :
         ''
       }

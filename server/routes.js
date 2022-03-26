@@ -23,7 +23,9 @@ const {
   findQuestion,
   sortQuestion,
   getQuestionsOfCurrentPage,
-  updateQuestionStatus
+  updateQuestionStatus,
+  getAllReport,
+  getUserReportById
 } = require('./controllers/questions');
 const {
   loadAnswers,
@@ -34,7 +36,8 @@ const {
   getAnswersOfCurrentPage
 } = require('./controllers/answers');
 const { listPopulerTags, searchTags, listTags } = require('./controllers/tags');
-const { upvote, downvote, unvote,chekVote } = require('./controllers/votes');
+const { upvote, downvote, unvote,chekVote,report,removeReport } = require('./controllers/votes');
+
 const { loadComments, validate, createComment, removeComment, getAllComments, getCommentsOfCurrentPage } = require('./controllers/comments');
 
 const requireAuth = require('./middlewares/requireAuth');
@@ -72,8 +75,10 @@ router.get('/question/user/:username', listByUser);
 router.delete('/question/:question', [requireAuth, questionAuth], removeQuestion);
 router.get('/question/find/:keyWord',findQuestion);
 //questions in admin
-router.get('/questions?', getQuestionsOfCurrentPage);
+/* router.get('/questions/admin?', getQuestionsOfCurrentPage); */
 router.put('/question/:id', updateQuestionStatus);
+router.get('/question/report/qt',getAllReport);
+router.get('/question/users/report/:id',getUserReportById);
 
 
 //tags
@@ -93,6 +98,7 @@ router.get('/votes/upvote/:question/:answer?', requireAuth, upvote);
 router.get('/votes/downvote/:question/:answer?', requireAuth, downvote);
 router.get('/votes/unvote/:question/:answer?', requireAuth, unvote);
 router.get('/votes/checkvote/:question/:answer?', requireAuth, chekVote);
+router.get('/votes/report/:question/:answer?', requireAuth, report);
 
 //comments
 router.param('comment', loadComments);
@@ -104,6 +110,9 @@ router.get('/allComments/:question', getAllComments);
 router.get('/allComments/:question/:answer', getAllComments);
 router.get('/comments/:question?', getCommentsOfCurrentPage);
 router.get('/comments/:question/:answer/?', getCommentsOfCurrentPage);
+
+//report
+router.delete('/report/:question/:id?', removeReport);
 
 module.exports = (app) => {
   app.use('/api', router);

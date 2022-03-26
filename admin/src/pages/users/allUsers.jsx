@@ -23,6 +23,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../App.css";
 
+import {useRouter} from "../../components/pangination/useRouter"
+import Pangination from "../../components/pangination/index"
+
 const useStyles = makeStyles({
   table: {
     width: "90%",
@@ -46,19 +49,24 @@ const useStyles = makeStyles({
 });
 
 const AllUsers = () => {
-  const classes = useStyles();
+  const router = useRouter();
+
+
   const [usersOfCurrentPage, setUsersOfCurrentPage] = useState([]);
+  const [currentPage,setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1);
+
   const [allUsers, setAllUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState([]);
   const [query, setQuery] = useState({ pageNumber: 0, sort: "", search: "" });
-  const [totalPages, setTotalPages] = useState([]);
+ 
   const pages = new Array(totalPages).fill(null).map((v, i) => i);
 
   const qt_content = {
     wordBreak: 'break-word',
     whiteSpace: 'pre-wrap',
     overflow: 'hidden',
-    WebkitLineClamp: 1,
+    WebkitLineClamp: 2,
     display: '-webkit-box',
     WebkitBoxOrient: 'vertical',
     textAlign: 'left'
@@ -68,53 +76,36 @@ const AllUsers = () => {
     wordBreak: 'break-word',
     whiteSpace: 'pre-wrap',
     overflow: 'hidden',
-    WebkitLineClamp: 1,
+    WebkitLineClamp: 2,
     WebkitBoxOrient: 'vertical',
     textAlign: 'left'
   }
+  const qt_img = {
+   width:'50px'
+  }
+  const qt_find_field = {
+    width:'50%',
+    marginBottom:'10px'
+   };
 
-  const previous = () => {
-    setQuery({
-      pageNumber: Math.max(0, query.pageNumber - 1),
-      sort: query.sort,
-      search: query.search
-    });
-  };
-  const next = () => {
-    setQuery({
-      pageNumber: Math.min(totalPages - 1, query.pageNumber + 1),
-      sort: query.sort,
-      search: query.search
-    });
-  };
   useEffect(() => {
-    getAllUsers().then((res) => {
-      setAllUsers(res.data);
+    var request = {
+      params: {
+        sortType:query.sort,
+        page: router.query.pagee ? router.query.pagee : 1,
+        size: 15,
+      }
+    };
+   
+    getAllUsers(request).then((res) => {
+      setTotalPages(res.data.pageNum)  
+      setCurrentPage(res.data.currentPage)
+      setUsersOfCurrentPage(res.data.user);
     });
-  }, []);
-  useEffect(() => {
-    getUsersOfCurrentPage(query.pageNumber, query.sort, query.search).then((res) => {
-      setUsersOfCurrentPage(res.data.users);
-      setTotalPages(res.data.totalPages);
-    });
-  }, [query]);
+  }, [router,query]);
+  
 
-  // useEffect(() => {
-  //   setUsersOfCurrentPage(
-  //     allUsers.filter((val) => {
-  //       if (searchTerm.toString() === "") {
-  //         return val;
-  //       } else if (
-  //         val.username
-  //           .toString()
-  //           .toLowerCase()
-  //           .includes(searchTerm.toString().toLowerCase())
-  //       ) {
-  //         return val;
-  //       }
-  //     })
-  //   );
-  // }, [searchTerm]);
+
   useEffect(() => {
     setQuery({
       pageNumber: query.pageNumber,
@@ -125,7 +116,8 @@ const AllUsers = () => {
 
 
   const deleteUserFunction = async (id) => {
-    window.confirm("Are you sure about that?");
+    console.log(id)
+    window.confirm("This would also remove all questions of this user. Are you sure about that?");
     await deleteUser(id);
     alert("Delete successfully!!!");
     getAllUsers().then((res) => setAllUsers(res.data));
@@ -134,24 +126,13 @@ const AllUsers = () => {
       setTotalPages(res.data.totalPages);
     });
   };
-  const isFirstPage = () => {
-    return "page-item " + (query.pageNumber === 0 ? "disabled" : "");
-  };
-  const isLastPage = () => {
-    return (
-      "page-item " + (query.pageNumber === totalPages - 1 ? "disabled" : "")
-    );
-  };
-  const isActive = (pageNumber) => {
-    return "page-item " + (query.pageNumber === pageNumber ? "active" : "");
-  };
+
   return (
     <div className="App">
       <h1>USERS MANAGEMENT</h1>
       <Button
         variant="contained"
         style={{
-          marginLeft: "4%",
           float: "left",
           background: "#1fae51",
           color: "white",
@@ -161,7 +142,7 @@ const AllUsers = () => {
       >
         + Add
       </Button>{" "}
-      <form class="d-flex">
+      <form class="d-flex" style={qt_find_field}>
         <input
           class="form-control me-2"
           type="search"
@@ -171,13 +152,11 @@ const AllUsers = () => {
             setSearchTerm(event.target.value);
           }}
         />
-        <button class="btn btn-outline-success" type="submit">
-          <FontAwesomeIcon icon={faSearch} />
-        </button>
+      
       </form>
       <TableContainer component={Paper}>
 
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 850 }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell align="center">No.</TableCell>
@@ -315,8 +294,8 @@ const AllUsers = () => {
                 </TableCell>
 
                 <TableCell align="center">{row.role}</TableCell>
-                <TableCell align="center">
-                  <img src={row.profilePhoto} alt="Avatar"></img>
+                <TableCell align="center" >
+                  <img style={qt_img} src={row.profilePhoto} alt="Avatar" />
                 </TableCell>
                 <TableCell align="center">
                   <div style={qt_content}>
@@ -359,33 +338,7 @@ const AllUsers = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <nav aria-label="Page navigation example" className="pt_outline">
-        <ul class="pagination justify-content-center">
-          <li class={isFirstPage()}>
-            <a class="page-link" onClick={previous}>
-              Previous
-            </a>
-          </li>
-          {pages.map((pageIndex) => (
-            <li class={isActive(pageIndex)}>
-              <a
-                class="page-link"
-                onClick={() => {
-                  setQuery({ pageNumber: pageIndex, sort: query.sort });
-                }}
-              >
-                {pageIndex + 1}
-              </a>
-            </li>
-          ))}
-
-          <li class={isLastPage()}>
-            <a class="page-link" onClick={next}>
-              Next
-            </a>
-          </li>
-        </ul>
-      </nav>
+     <Pangination currentPage={currentPage} totalPage={totalPages}/>
     </div>
   );
 };

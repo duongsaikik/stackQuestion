@@ -5,6 +5,8 @@ import AllQuestions from "./pages/questions/allQuestions";
 import AllComments from "./pages/comments/allComments";
 import AllAnswers from "./pages/answers/allAnswers";
 import AllCensorship from "./pages/censorship/allCensorship";
+import AllReport from "./pages/reports/allReport";
+import UserReport from "./pages/reports/userReport";
 import Login from "./pages/login/login.jsx";
 import NavBar from "./pages/NavBar";
 import NotFound from "./pages/NotFound";
@@ -45,6 +47,12 @@ function App() {
               component={AllAnswers}
             />
             <PrivateRoute exact path="/censorship" component={AllCensorship} />
+            <PrivateRoute exact path="/report" component={AllReport} />
+            <PrivateRoute
+              exact
+              path="/report/userreport/:id"
+              component={UserReport}
+            />
             <Redirect exact from="/logout" to="/login" />
             <Route component={NotFound} />
           </Switch>

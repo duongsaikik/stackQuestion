@@ -41,7 +41,7 @@ const handleSubmit = async (e) =>{
     
         <form className={styles.container} onSubmit={handleSubmit}>
          
-          <h2>Your answer</h2>
+          <h2>Câu trả lời của bạn</h2>
            <TextArea                 
              onChange={handleChangeCM}                 
               value={comment}
@@ -54,17 +54,17 @@ const handleSubmit = async (e) =>{
               primary
              onClick={() => !isAuthenticated() && handleComponentVisible(true, 'signup')}
             >
-              Post Your Answer
+              Đăng tải
             </Button>
           </div>
           <h3>
-            Browse other questions tagged &nbsp;
+            Duyệt tới các tag &nbsp;
             {tags.map((tag) => (
               <Tag key={tag}>{tag}</Tag>
             ))}
-            or &nbsp;
+            hoặc &nbsp;
             <Link href="/questions/ask" as="/questions/ask">
-              <a>ask your own question.</a>
+              <a>đặt câu hỏi.</a>
             </Link>
           </h3>
         </form>

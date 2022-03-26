@@ -1,17 +1,17 @@
 import React from 'react'
 import styles from './question-stats.module.css'
 
-const QuestionStats = ({ voteCount, answerCount, view  }) => {
+const QuestionStats = ({ voteCount, answerCount, view,check  }) => {
     
   return (
     <div className={styles.container}>
       <div className={styles.vote}>
         <span>{voteCount}</span>
-        <p>votes</p>
+        <p>Bình chọn</p>
       </div>
-      <div className={answerCount > 0 ? styles.highlight_answer : styles.answer}>
+      <div className={check  ? styles.highlight_answer : styles.answer}>
         <span>{answerCount}</span>
-        <p>answers</p>
+        <p>Trả lời</p>
       </div>
       <div className={styles.view}>
         <span>
@@ -21,7 +21,7 @@ const QuestionStats = ({ voteCount, answerCount, view  }) => {
           ? (parseInt(Number(view)/(1000 * 1000)))+'m'  
           : view}
         </span>
-        <p>views</p>
+        <p>Lượt xem</p>
       </div>
     </div>
   )

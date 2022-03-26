@@ -18,7 +18,7 @@ const Navigation = () => {
         }
       >
         <World />
-        <span>Question</span>
+        <span>Câu hỏi</span>
       </NavItem>
 
       <NavItem href="/tags" selected={router.pathname == '/tags'}>
@@ -29,7 +29,7 @@ const Navigation = () => {
         href="/users"
         selected={router.pathname.split('/')[1] == 'users'}
       >
-        <span>Users</span>
+        <span>Tài khoản</span>
       </NavItem>
     </nav>
   )

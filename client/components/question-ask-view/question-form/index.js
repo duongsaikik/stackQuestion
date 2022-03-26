@@ -25,7 +25,7 @@ const QuestionForm = () => {
   const[contentBo,setContentBo] = useState('');
   const[errMessBo,setErrMessBo] = useState('');
   const[errMessTag,setErrMessTag] = useState('');
-  const[tagsSelect,setTagSelect] = useState(null)
+  const[tagsSelect,setTagSelect] = useState([])
 
   
 const handleChangeCM = (event, editor)  =>{ 
@@ -42,25 +42,28 @@ const selectedTags = (tags) => {
       initialValues={{ title: '', text: '', tags: [] }}
       onSubmit={async (values, { setStatus, resetForm }) => {
         setLoading(true)
+     /*    console.log(values) */
         try {
-          var title = values.title;
-          var tags = tagsSelect;
-          var req = {
-            title,
-            text: contentBo,
-            tags
-          }
+        
+          values.tags = tagsSelect;
+          values.text = contentBo;
+       
+        
           if(isAuthenticated()){
-            if(contentBo.length > 30 && tagsSelect.length > 0 ){
-              console.log(req)
-              await authAxios.post('questions',req)
+            if(contentBo.length > 30 && tagsSelect.length > 0){          
+               await authAxios.post('questions',values)
               resetForm({})
-              router.push('/')
+              alert("Câu hỏi của bạn đã được ghi nhận và sẽ được đăng tải sau khi được quản trị viên duyệt")
+              setErrMessBo("");
+              setErrMessTag('')
+              router.push('/') 
+           
             }else if(contentBo.length < 30){         
               setErrMessBo("Nội dung phải lớn hơn 30 ký tự");
-            }else{
-              setErrMessBo('')
+            }else if(tagsSelect.length < 1){
+                console.log(errMessTag)
               setErrMessTag("Cần ít nhất 1 tag");
+              console.log("tag erro")
             }
           }else{
             router.push("/auth");
@@ -71,6 +74,7 @@ const selectedTags = (tags) => {
          
         } catch (error) {
           setStatus(error.response.data.message)
+          
         }
         setLoading(false)
       }}
@@ -79,7 +83,12 @@ const selectedTags = (tags) => {
         .required("Chủ đề còn trống")        
           .max(150, 'Title cannot be longer than 150 characters.')
           .min(15, 'Chủ đề phải lớn hơn 15 ký tự.'),
-         
+          text: Yup.string()
+          .required("Chủ đề còn trống")        
+            .max(500, 'Title cannot be longer than 150 characters.')
+            .min(30, 'Chủ đề phải lớn hơn 30 ký tự.'),
+  
+     
        
       })}
     >
@@ -89,7 +98,7 @@ const selectedTags = (tags) => {
         touched,
         status,
         handleChange,
-      
+     
         handleBlur,
         handleSubmit,
         isSubmitting
@@ -111,8 +120,13 @@ const selectedTags = (tags) => {
             />
             <Textarea           
              autoComplete="off"           
-              onChange={handleChangeCM}                      
-              errorMessage={errMessBo}
+              onChange={(event, editor)  =>{ 
+                const data = editor.getData();
+                values.text = data;  
+                setContentBo(data)
+              }}
+              value={values.text}                      
+              errorMessage={errors.text && errors.text}
               label="Nội dung"
               inputInfo="Bày tỏ một cách rõ ràng về vấn đề chính của bạn"
             />

@@ -76,7 +76,7 @@ const PostSummary = ({
         {(authState.userInfo?.id === author.id || isAdmin()) && (
           <div className={styles.row}>
             <a className={styles.delete} onClick={() => handleDeleteComment()}>
-              delete
+              Xoá
             </a>
           </div>
         )}

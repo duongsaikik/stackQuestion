@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const voteSchema = require('./vote');
 const commentSchema = require('./comment');
 const answerSchema = require('./answer');
+const reportSchema = require('./report');
 
 const questionSchema = new Schema({
   author: {
@@ -21,7 +22,8 @@ const questionSchema = new Schema({
   created: { type: Date, default: Date.now },
   views: { type: Number, default: 0 },
   check:{type: Boolean, default: false},
-  _status:{type:String,default:'pending'}
+  _status:{type:String,default:'pending'},
+  report:[reportSchema]
 });
 
 questionSchema.set('toJSON', { getters: true });
@@ -58,6 +60,16 @@ questionSchema.methods = {
   },
   checkeds: function (user,check){
     this.check= check;
+    return this;
+  },
+  reportQt: function (author, email, username){
+    this.report.push({author, email, username})
+    return this;
+  },
+  removeReport : function(id){
+    const report = this.report.id(id);
+    if (!report) throw new Error('Report not found');
+    report.remove();
     return this;
   },
   addComment: function (author, body) {

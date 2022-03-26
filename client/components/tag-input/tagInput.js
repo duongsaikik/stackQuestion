@@ -1,5 +1,5 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
-import React, { useState,useEffect } from "react";
+
+import React, { useState } from "react";
 import styles from './tagInput.module.css'
 
 
@@ -7,20 +7,19 @@ import styles from './tagInput.module.css'
 import { publicFetch } from "../../util/fetcher";
 
 const TagInput = ({ selectedTags, inputInfo, label, errorMessage }) => {
-
+	
 	const [tag, setTags] = useState([]);
 	const [itemTag, setItemTag] = useState(null);
 	const [search, setSearch] = useState('');
-	const [err,setErr] = useState('');
-
-	useEffect(() =>{
-		setErr(errorMessage)
-	},[errorMessage])
+	const [err,setErr] = useState(errorMessage);
 	console.log(err)
+	
+	
 	const removeTags = (indexToRemove) => {
 		setTags([...tag.filter((_, index) => index !== indexToRemove)]);
-
+		selectedTags([...tag.filter((_, index) => index !== indexToRemove)]);
 	};
+
 	const removeAccents = (str) => {
 		return str.normalize('NFD')
 			.replace(/[\u0300-\u036f]/g, '')
@@ -117,6 +116,7 @@ const TagInput = ({ selectedTags, inputInfo, label, errorMessage }) => {
 					placeholder="Nhấn space để thêm tag"
 					onChange={handlerShow}
 					value={search}
+					
 				/>
 			</div>
 			{
@@ -135,7 +135,7 @@ const TagInput = ({ selectedTags, inputInfo, label, errorMessage }) => {
 					</div>
 					: ''
 			}
-			{err && <p className={styles.errorMessage}>{err}</p>}
+			{errorMessage ? <p className={styles.errorMessage}>{errorMessage}</p> : <p className={styles.errorMessage}>{err}</p>}
 		</div>
 
 

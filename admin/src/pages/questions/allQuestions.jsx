@@ -25,6 +25,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FetchContext } from "../../context/fetch";
 import axios from "axios";
 import slug from "slug";
+import {useRouter} from "../../components/pangination/useRouter"
+import Pangination from "../../components/pangination/index"
 
 const useStyles = makeStyles({
   table: {
@@ -52,16 +54,19 @@ const styleButton = {
 };
 
 const AllQuestions = () => {
+  const router = useRouter();
+  
   const { authAxios } = useContext(FetchContext);
   const usersUrl = "http://localhost:8080/api";
   const classes = useStyles();
   const [questionsOfCurrentPage, setQuestionsOfCurrentPage] = useState([]);
-  const [allQuestions, setAllQuestions] = useState([]);
+  
+  const [currentPage,setCurrentPage] = useState(1)
   const [searchTerm, setSearchTerm] = useState("");
   const [query, setQuery] = useState({ pageNumber: 0, sort: "" });
 
   const [totalPages, setTotalPages] = useState([]);
-  const pages = new Array(totalPages).fill(null).map((v, i) => i);
+ 
   const qt_content = {
     display: "-webkit-box",
     wordBreak: "break-word",
@@ -79,8 +84,10 @@ const AllQuestions = () => {
     WebkitBoxOrient: "vertical",
     textAlign: "left",
   };
-
-  const previous = () => {
+  const qt_find_field = {
+   width:'50%'
+  };
+/*   const previous = () => {
     setQuery({
       pageNumber: Math.max(0, query.pageNumber - 1),
       sort: query.sort,
@@ -108,22 +115,33 @@ const AllQuestions = () => {
       setAllQuestions(res.data);
     });
   }, []);
+  */
   useEffect(() => {
-    getQuestionsOfCurrentPage(query.pageNumber, query.sort).then((res) => {
-      setQuestionsOfCurrentPage(res.data.questions);
+    var request = {
+      params: {
+        requestType: query.sort,
+        page:  1,
+        size: 15,
+      }
+    };
+  
+    getQuestionsOfCurrentPage(request).then((res) => {
+     
+        setCurrentPage(res.data.currentPage)
+      setQuestionsOfCurrentPage(res.data.data);
       setTotalPages(res.data.totalPages);
     });
   }, [query]);
-
+ 
   useEffect(() => {
     var request = {
       params: {
         requestType: "Newest",
-        page: 1,
+        page: router.query.pagee ? router.query.pagee : 1,
         size: 15,
-      },
+      }
     };
-
+   
     const fetchQt = async () => {
       if (searchTerm) {
         const { data } = await axios.get(
@@ -132,45 +150,66 @@ const AllQuestions = () => {
         );
         setQuestionsOfCurrentPage(data.data);
         setTotalPages(data.pageNum);
+        setCurrentPage(data.currentPage)
       } else {
         const { data } = await axios.get(`${usersUrl}/question`, request);
+     
         setQuestionsOfCurrentPage(data.data);
         setTotalPages(data.pageNum);
+        setCurrentPage(data.currentPage)
       }
     };
     fetchQt();
-  }, [searchTerm]);
+  }, [searchTerm,router]);
+ 
   const deleteQuestionFunction = async (id) => {
+    var request = {
+    
+        requestType: "Newest",
+        page: 1,
+        size: 15,
+ 
+    };
+    const currentPath = router.pathname;
+    const currentQuery = router.query;
+  
+  
+
+    router.push(`${currentPath}?pagee=${currentQuery.pagee}`)
     window.confirm("Are you sure about that?");
     await authAxios.delete(`${usersUrl}/question/${id}`);
     alert("Xóa thành công!!!");
-    getAllQuestions().then((res) => setAllQuestions(res.data));
-    getQuestionsOfCurrentPage(query.pageNumber, query.sort).then((res) => {
-      setQuestionsOfCurrentPage(res.data.questions);
+     getAllQuestions(request.page, request.size,request.requestType).then((res) => {
+      setQuestionsOfCurrentPage(res.data.data);
       setTotalPages(res.data.totalPages);
-    });
+      setCurrentPage(res.data.currentPage)
+     });
+  
+     
+   
   };
 
   return (
     <div className="App">
       <div>
         <h1>QUESTIONS MANAGEMENT</h1>
-        <form class="d-flex">
+        <form class="d-flex" style={qt_find_field}>
           <input
             class="form-control me-2"
             type="search"
+            style={{marginBottom:10}}
             placeholder="Search"
             aria-label="Search"
             onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
           />
-          <button class="btn btn-outline-success" type="submit">
+         {/*  <button class="btn btn-outline-success" type="submit">
             <FontAwesomeIcon icon={faSearch} />
-          </button>
+          </button> */}
         </form>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table sx={{ minWidth: 850 }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell align="center">No.</TableCell>
@@ -384,33 +423,7 @@ const AllQuestions = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <nav aria-label="Page navigation example" className="pt_outline">
-          <ul class="pagination justify-content-center">
-            <li class={isFirstPage()}>
-              <a class="page-link" onClick={previous}>
-                Previous
-              </a>
-            </li>
-            {pages.map((pageIndex) => (
-              <li class={isActive(pageIndex)}>
-                <a
-                  class="page-link"
-                  onClick={() => {
-                    setQuery({ pageNumber: pageIndex, sort: query.sort });
-                  }}
-                >
-                  {pageIndex + 1}
-                </a>
-              </li>
-            ))}
-
-            <li class={isLastPage()}>
-              <a class="page-link" onClick={next}>
-                Next
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <Pangination currentPage={currentPage} totalPage={totalPages}/>
       </div>
     </div>
   );

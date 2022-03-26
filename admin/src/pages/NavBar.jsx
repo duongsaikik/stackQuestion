@@ -17,11 +17,6 @@ const useStyle = makeStyles({
 const NavBar = () => {
   const classes = useStyle();
   const { logout, isAuthenticated, isChecker } = useContext(AuthContext);
-
-
-  /* showNavbar('header-toggle','nav-bar','body-pd','header') */
-
-
   return (
     <>
 
@@ -30,7 +25,7 @@ const NavBar = () => {
           <div>
             <a href="#" className="nav__logo">
               <i className='bx bx-layer nav__logo-icon'></i>
-              <span className="nav__logo-name">Bedimcode</span>
+              <span className="nav__logo-name">StackQuestion</span>
             </a>
 
             <div className="nav__list">
@@ -53,6 +48,11 @@ const NavBar = () => {
                     <NavLink className="nav__link" to="/censorship" exact>
                       <i className='bx bx-bookmark nav__icon' ></i>
                       <span className="nav__name">Censorship</span>
+                    </NavLink>
+                    <NavLink className="nav__link" to="/report" exact>
+                      <i className='bx bxs-report nav__icon' ></i>
+                   
+                      <span className="nav__name">Report</span>
                     </NavLink>
                   </>
               }

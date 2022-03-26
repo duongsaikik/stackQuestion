@@ -85,12 +85,11 @@ const HomePage = () => {
       <Head>
         <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet' />
         <title>
-          {router.query.tag ? router.query.tag : 'Questions'} - Clone of
-          Stackoverflow
+          {router.query.tag ? router.query.tag : 'Questions'} - StackQuestions
         </title>
       </Head>
 
-      <PageTitle title={router.query.tag ? `Questions tagged [${router.query.tag}]` : 'All Questions'} button borderBottom={false} />
+      <PageTitle title={router.query.tag ? `Tag [${router.query.tag}]` : 'Tất cả câu hỏi'} button borderBottom={false} />
 
       <ButtonGroup
         borderBottom
@@ -117,7 +116,8 @@ const HomePage = () => {
             tags,
             author,
             created,
-            _status
+            _status,
+            check
           }) => (
             <>
               {
@@ -129,6 +129,7 @@ const HomePage = () => {
                       answerCount={answers.length}
                       answers={answers}
                       view={views}
+                      check={check}
                     />
                     <QuestionSummary
                       id={id}

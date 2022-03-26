@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Question = require('../models/question');
 const jwtDecode = require('jwt-decode');
 const nodeMailer = require("nodemailer");
 const { body, validationResult } = require('express-validator');
@@ -67,10 +68,12 @@ exports.signup = async (req, res) => {
   }
 
   try {
-    const { username } = req.body;
-
+    const { username,email,role } = req.body;
     const userData = {
-      username: username.toLowerCase()
+      email: email,
+         username: username.toLowerCase(),
+        password: '',
+        role:role
     };
 
     const existingUsername = await User.findOne({
@@ -79,7 +82,7 @@ exports.signup = async (req, res) => {
 
     if (existingUsername) {
       return res.status(400).json({
-        message: 'Username already exists.'
+        message: 'Username đã tồn tại.'
       });
     }
     if (req.body.email) {
@@ -87,14 +90,16 @@ exports.signup = async (req, res) => {
         email: req.body.email
       });
       if (existingEmail) {
+        console.log(1)
         return res.status(400).json({
-          message: 'Email already exists.'
+          message: 'Email đã tồn tại.'
         });
       } else {
         userData.email = req.body.email;
       }
     }
-    if (req.body.role) userData.role = req.body.role;
+   
+  
     if (req.body.password) {
       const hashedPassword = await hashPassword(req.body.password);
       userData.password = hashedPassword;
@@ -221,10 +226,11 @@ exports.authenticate = async (req, res) => {
 
 exports.listUsers = async (req, res, next) => {
   try {
-    const { sortType = '-created' } = req.body;
+   /*  const { sortType = '-created' } = req.body; */
+   const { page, size ,sortType = '-created'} = req.query;
     const users = await User.find().sort(sortType);
-    const { page, size } = req.query;
-
+   
+    console.log(sortType)
     const { dataInPer, pagePer } = getPagination(page, size, users);
     res.json({
       currentPage: Number(page),
@@ -369,7 +375,13 @@ exports.deleteUser = async (req, res, next) => {
   try {
     const user = await User.findOne({ username: req.params.username });
     
-    await User.deleteOne({ _id: user._id });
+    const questions = await Question.find({ author: user._id });
+   
+    for(let i = 0 ;i < questions.length  ; i++){
+      await questions[i].remove();
+    }
+     
+     await User.deleteOne({ _id: user._id }); 
     res.json('Delete User Successfully');
   } catch (error) {
     next(error);

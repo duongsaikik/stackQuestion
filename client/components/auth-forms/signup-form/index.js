@@ -19,7 +19,7 @@ const SignupForm = () => {
 
   return (
     <Formik
-      initialValues={{email: '', username: '', password: '', passwordConfirmation: '' }}
+      initialValues={{email: '', username: '', password: '', passwordConfirmation: '',role :'user' }}
       onSubmit={async (values, { setStatus, resetForm }) => {
         setLoading(true)
         try {

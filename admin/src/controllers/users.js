@@ -1,7 +1,7 @@
 import axios from "axios";
 const usersUrl = "http://localhost:8080/api";
-export const getAllUsers = async () => {
-  return await axios.get(`${usersUrl}/users`);
+export const getAllUsers = async (request) => {
+  return await axios.get(`${usersUrl}/users`,request);
 };
 
 export const getUserByUsername = async (id) => {

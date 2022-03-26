@@ -56,14 +56,14 @@ function UsersPage() {
   return (
     <Layout extra={false}>
       <Head>
-        <title>Users - Clone of Stackoverflow</title>
+        <title>StackQuestions</title>
         <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet' />
       </Head>
 
-      <PageTitle title="Users" borderBottom={false} />
+      <PageTitle title="Tài khoản" borderBottom={false} />
 
       <SearchInput
-        placeholder="Search by user"
+        placeholder="Tên tài khoản"
         isLoading={loading}
         autoFocus
         autoComplete="off"
@@ -91,7 +91,7 @@ function UsersPage() {
           </UserList>
 
           {users.length == 0 && (
-            <p className="not-found">No users matched your search.</p>
+            <p className="not-found">Tài khoản không tồn tại.</p>
           )}
         </>
       )}

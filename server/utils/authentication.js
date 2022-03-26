@@ -11,7 +11,8 @@ const createToken = (user) => {
     {
       id: user._id,
       username: user.username,
-      role: user.role
+      role: user.role,
+      email:user.email
     },
     config.jwt.secret,
     { algorithm: 'HS256', expiresIn: config.jwt.expiry }

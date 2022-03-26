@@ -47,7 +47,7 @@ const CommentList = ({
             className={styles.addComment}
             onClick={() => isAuthenticated() ? setShowAddComment(true) : handleComponentVisible(true, 'signup')}
           >
-            add comment
+            Thêm bình luận
           </a>
         )
       )}
