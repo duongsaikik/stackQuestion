@@ -78,10 +78,11 @@ const QuestionDetail = ({ questionId, title }) => {
                 author={question.author}
                 created={question.created}
                 questionId={questionId}
+                editTime={question.editTime}
               >
                 {question.text}
               </PostSummary>
-              <CommentList questionId={questionId} setQuestion={setQuestion}>
+              <CommentList questionId={questionId} editTime={question.editTime} author={idOwner} setQuestion={setQuestion}>
                 {question.comments.map(({ id, author, created, body }) => (
                   
                   <CommentItem

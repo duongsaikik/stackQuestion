@@ -6,9 +6,9 @@ import styles from './tagInput.module.css'
 
 import { publicFetch } from "../../util/fetcher";
 
-const TagInput = ({ selectedTags, inputInfo, label, errorMessage }) => {
-	
-	const [tag, setTags] = useState([]);
+const TagInput = ({ selectedTags, inputInfo, label, errorMessage,value }) => {
+
+	const [tag, setTags] = useState(value? value : []);
 	const [itemTag, setItemTag] = useState(null);
 	const [search, setSearch] = useState('');
 	const [err,setErr] = useState(errorMessage);

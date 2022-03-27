@@ -23,7 +23,8 @@ const questionSchema = new Schema({
   views: { type: Number, default: 0 },
   check:{type: Boolean, default: false},
   _status:{type:String,default:'pending'},
-  report:[reportSchema]
+  report:[reportSchema],
+  editTime: {type:Number,default:0}
 });
 
 questionSchema.set('toJSON', { getters: true });

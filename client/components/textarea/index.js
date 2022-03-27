@@ -56,7 +56,7 @@ const TextArea = ({
             );
           });
         }}
-        value={value}
+        data={value}
         {...props}
       />
       </>

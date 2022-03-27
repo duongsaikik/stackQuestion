@@ -54,6 +54,7 @@ exports.createQuestion = async (req, res, next) => {
   }
 };
 
+
 exports.show = async (req, res, next) => {
   try {
     const { id } = req.question;
@@ -303,7 +304,8 @@ exports.updateQuestionStatus = async (req, res, next) => {
 
   const id = req.params.id;
   console.log(req.body)
-  Question.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+
+   Question.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then((data) => {
       console.log(req.body);
       if (!data) {
@@ -311,7 +313,7 @@ exports.updateQuestionStatus = async (req, res, next) => {
           message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found!`
         });
       } else res.send({ message: 'Tutorial was updated successfully.' });
-    })
+    }) 
     .catch((err) => {
       next(err);
     });

@@ -17,7 +17,8 @@ const PostSummary = ({
   questionId,
   answerId,
   setQuestion,
-  children
+  children,
+  editTime
 }) => {
   const { authState, isAdmin } = useContext(AuthContext)
   const { authAxios } = useContext(FetchContext)
@@ -68,7 +69,7 @@ const PostSummary = ({
                 })}
               </span>
               <Link href="/users/[user]" as={`/users/${author.username}`}>
-                <a>{author.username}</a>
+                <a>{author.username} {editTime === 1 ? "(đã chỉnh sửa)": ''}</a>
               </Link>
             </div>
           </div>
