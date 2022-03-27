@@ -197,7 +197,7 @@ const AllCensorship = () => {
                 setStatus(e.target.value)
               }}
             >
-              <MenuItem value={'pending'}>Pending</MenuItem>
+            {/*   <MenuItem value={'pending'}>Pending</MenuItem> */}
               <MenuItem value={'deny'}>Deny</MenuItem>
               <MenuItem value={'accept'}>Accept</MenuItem>
             </Select>

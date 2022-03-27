@@ -33,7 +33,7 @@ const NavBar = () => {
                 isChecker()
                   ? <NavLink className="nav__link" to="/censorship" exact>
                     <i className='bx bx-bookmark nav__icon' ></i>
-                    <span className="nav__name">CenSorship</span>
+                    <span className="nav__name">Censorship</span>
                   </NavLink>
                   : <>
                     <NavLink className="nav__link" to="/users" exact>
@@ -52,7 +52,7 @@ const NavBar = () => {
                     <NavLink className="nav__link" to="/report" exact>
                       <i className='bx bxs-report nav__icon' ></i>
                    
-                      <span className="nav__name">Report</span>
+                      <span className="nav__name">Reports</span>
                     </NavLink>
                   </>
               }

@@ -25,6 +25,7 @@ const QuestionDetail = ({ questionId, title }) => {
       const { data } = await publicFetch.get(`/question/${questionId}`)
       setQuestion(data);
       setIdOwner(data.author.id);
+      console.log(data)
 
      
     

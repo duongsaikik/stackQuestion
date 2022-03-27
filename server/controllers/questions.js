@@ -35,19 +35,21 @@ exports.createQuestion = async (req, res, next) => {
   } */
   try {
     const { title, tags, text } = req.body;
-      console.log(tags)
+      console.log(req.user)
+
     const author = req.user.id;
-    console.log(author)
+   
     const question = await Question.create({
       title,
       author,
       tags,
       text
     });
+    console.log(author)
      //decrease answers mount
-     const user = await User.findByIdAndUpdate(
+    /*  const user = await User.findByIdAndUpdate(
       author, { $inc: { questionsMount: 1, score: initialScore } },
-  );
+  ); */
     res.status(201).json(question);
   } catch (error) {
     next(error);

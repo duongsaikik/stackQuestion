@@ -123,6 +123,7 @@ const PostVote = ({
         <ArrowDown className={isDownVoted() ? styles.voted : exists() ? styles.hide : ''} />
       </Button>
       {
+      isAuthenticated()?
         report
           ? <div className={!existsReport() ? styles.report : cn(styles.report,styles.hide)}>
             <Button onClick={handlerShow}>
@@ -131,12 +132,13 @@ const PostVote = ({
             {
               openReport
                 ? <div className={styles.modelReport} onClick={handlerReport}>
-                  Báo cáo câu hỏi trùng
+                  Báo cáo câu hỏi
                 </div>
                 : ''
             }
           </div>
           : ''
+          :''
       }
       {
         isAuthenticated()

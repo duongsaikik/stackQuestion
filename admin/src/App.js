@@ -26,7 +26,7 @@ function App() {
           <NavBar />
           <Switch>
             <Route exact path="/login" component={Login} />
-            <PrivateRoute exact path="/" component={CodeForInterview} />
+           {/*  <PrivateRoute exact path="/" component={CodeForInterview} /> */}
             <PrivateRoute exact path="/users" component={AllUsers} />
             <PrivateRoute exact path="/users/add" component={AddUser} />
             <PrivateRoute exact path="/users/edit/:id" component={EditUser} />
