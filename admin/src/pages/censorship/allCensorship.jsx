@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import { Link } from "react-router-dom";
+import moment from 'moment'
 
 import Pangination from "../../components/pangination/index";
 import {useRouter} from "../../components/pangination/useRouter";
@@ -64,7 +65,7 @@ const qt_tag = {
   overflow: 'hidden',
   WebkitLineClamp: 3,
   WebkitBoxOrient: 'vertical',
-  textAlign: 'left'
+  
 
 }
 const qt_created = {
@@ -73,7 +74,7 @@ const qt_created = {
   overflow: 'hidden',
   WebkitLineClamp: 2,
   WebkitBoxOrient: 'vertical',
-  textAlign: 'left'
+  
 
 }
 const qt_itemTag = {
@@ -310,7 +311,7 @@ const AllCensorship = () => {
                     {item}
                   </span>
                 })}</TableCell>
-                <TableCell sx={qt_created} align="center">{row.created}</TableCell>
+                <TableCell sx={qt_created} align="center">{moment(row.created).format("DD/MM/YYYY hh:mm:ss")}</TableCell>
                 <TableCell align="center">{row.author.username}</TableCell>
                 <TableCell align="center">
                   {row._status === 'accept' && (

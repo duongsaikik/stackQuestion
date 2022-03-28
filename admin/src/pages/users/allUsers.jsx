@@ -78,7 +78,7 @@ const AllUsers = () => {
     overflow: 'hidden',
     WebkitLineClamp: 2,
     WebkitBoxOrient: 'vertical',
-    textAlign: 'left'
+    
   }
   const qt_img = {
    width:'50px'
