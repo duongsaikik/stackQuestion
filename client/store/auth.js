@@ -7,19 +7,19 @@ const AuthContext = createContext()
 const { Provider } = AuthContext
 
 const AuthProvider = ({ children }) => {
-  const router = useRouter();
-  const [authState, setAuthState] = useState({})
-  const [info, setInfoState] = useState({});
+  const router = useRouter()
+  const [authState, setAuthState] = useState()
+  const [info, setInfoState] = useState()
 
-  const [retrieveCode, setRetrieveCodeState] = useState(0);
-  const [announce, setAnnounceState] = useState('');
+  const [retrieveCode, setRetrieveCodeState] = useState(0)
+  const [announce, setAnnounceState] = useState('')
 
   useEffect(() => {
     const userInfo = localStorage.getItem('userInfo')
-    const ch = userInfo ? JSON.parse(userInfo) : {};
+    const ch = userInfo && JSON.parse(userInfo)
     var request = {
       params: {
-        username: ch.username
+        username: ch?.username || null
       }
     }
     const fetchUser = async () => {
@@ -33,23 +33,20 @@ const AuthProvider = ({ children }) => {
           userInfo: userInfo ? JSON.parse(userInfo) : {}
         })
       } else {
-        localStorage.removeItem('userInfo');
-        localStorage.removeItem('token');
+        localStorage.removeItem('userInfo')
+        localStorage.removeItem('token')
         localStorage.removeItem('expiresAt')
-        setAuthState({})
-        setInfoState({})
+        setAuthState(null)
+        setInfoState(null)
       }
-      
     }
-    fetchUser();
-   
+    fetchUser()
   }, [router])
 
   const setAuthInfo = ({ token, userInfo, expiresAt }) => {
     localStorage.setItem('token', token)
     localStorage.setItem('userInfo', JSON.stringify(userInfo))
     localStorage.setItem('expiresAt', expiresAt)
-
 
     setAuthState({
       token,
@@ -60,35 +57,33 @@ const AuthProvider = ({ children }) => {
   const setInfo = (userInfo) => {
     setInfoState({
       userInfo
-    });
+    })
   }
   const setCode = (code) => {
-    setRetrieveCodeState(code);
+    setRetrieveCodeState(code)
   }
   const setAnnounce = (announce) => {
-    setAnnounceState(announce);
+    setAnnounceState(announce)
   }
   const logout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('userInfo')
     localStorage.removeItem('expiresAt')
     setAuthState({})
-    router.push("/")
+    router.push('/')
   }
 
   const isAuthenticated = () => {
-
-    if (!authState.token || !authState.expiresAt) {
+    if (!authState?.token || !authState?.expiresAt) {
       return false
-    } 
+    }
     return new Date().getTime() / 1000 < authState.expiresAt
-
   }
 
   const isAdmin = () => {
-    return authState.userInfo?.role === 'admin'
+    return authState?.userInfo?.role === 'admin'
   }
- 
+
   return (
     <Provider
       value={{

@@ -47,7 +47,6 @@ exports.createComment = async (req, res, next) => {
 
 exports.removeComment = async (req, res, next) => {
   const { comment } = req.params;
-  console.log(comment)
   try {
     if (req.params.answer) {
       req.answer.removeComment(comment);

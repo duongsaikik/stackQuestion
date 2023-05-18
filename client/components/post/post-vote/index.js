@@ -8,7 +8,7 @@ import Button from '../../button'
 import { ArrowUp, ArrowDown } from '../../icons'
 import CheckIcon from '../../icons/CheckIcon'
 import Report from '../../icons/Report'
-import cn from "classnames";
+import cn from 'classnames'
 import styles from './post-vote.module.css'
 
 const PostVote = ({
@@ -20,36 +20,36 @@ const PostVote = ({
   checkAnswer,
   check,
   id,
-  report
+  report,
+  voteUser
 }) => {
   console.log(report)
   const { authState, isAuthenticated } = useContext(AuthContext)
   const { authAxios } = useContext(FetchContext)
   const { handleComponentVisible } = useContext(ModalContext)
-  const [openReport, setOpenReport] = useState(false);
+  const [openReport, setOpenReport] = useState(false)
 
-
+  console.log(id + ' ' + authState?.userInfo?.id)
   const existsReport = () => {
-    if (report.find((v) => v.author === authState.userInfo?.id)) {
-      return true;
+    if (report.find((v) => v.author === authState?.userInfo?.id)) {
+      return true
     }
-    return false;
+    return false
   }
 
-
   const exists = () => {
-    if (votes.find((v) => v.user === authState.userInfo?.id)) {
-      return true;
+    if (votes.find((v) => v.user === authState?.userInfo?.id)) {
+      return true
     }
-    return false;
+    return false
   }
 
   const isUpVoted = () => {
-    return votes.find((v) => v.user === authState.userInfo?.id)?.vote === 1
+    return votes.find((v) => v.user === authState?.userInfo?.id)?.vote === 1
   }
 
   const isDownVoted = () => {
-    return votes.find((v) => v.user === authState.userInfo?.id)?.vote === -1
+    return votes.find((v) => v.user === authState?.userInfo?.id)?.vote === -1
   }
 
   const upVote = async () => {
@@ -71,7 +71,6 @@ const PostVote = ({
       `/votes/unvote/${questionId}/${answerId ? answerId : ''}`
     )
     setQuestion(data)
-
   }
 
   const checkVote = async () => {
@@ -82,23 +81,27 @@ const PostVote = ({
     console.log(data)
   }
   const handlerShow = () => {
-    const t = !openReport;
+    const t = !openReport
     setOpenReport(t)
   }
   const handlerReport = async () => {
-    if(!existsReport()){
-      const { data } = await authAxios.get(`/votes/report/${questionId}/${answerId ? answerId : ''}`)
+    if (!existsReport()) {
+      const { data } = await authAxios.get(
+        `/votes/report/${questionId}/${answerId ? answerId : ''}`
+      )
       setQuestion(data)
-      alert("Báo cáo đã được ghi nhận")
-      const t = !openReport;
+      alert('Báo cáo đã được ghi nhận')
+      const t = !openReport
       setOpenReport(t)
     }
-   
   }
   return (
     <div className={styles.voteCell}>
       <Button
-        className={cn(styles.voteButton, isUpVoted() ? '' : isDownVoted() ? styles.hide : '')}
+        className={cn(
+          styles.voteButton,
+          isUpVoted() ? '' : isDownVoted() ? styles.hide : ''
+        )}
         onClick={() =>
           isAuthenticated()
             ? isUpVoted()
@@ -107,11 +110,16 @@ const PostVote = ({
             : handleComponentVisible(true, 'login')
         }
       >
-        <ArrowUp className={isUpVoted() ? styles.voted : exists() ? styles.hide : ''} />
+        <ArrowUp
+          className={isUpVoted() ? styles.voted : exists() ? styles.hide : ''}
+        />
       </Button>
       <div className={styles.score}>{score}</div>
       <Button
-        className={cn(styles.voteButton, isDownVoted() ? '' : isUpVoted() ? styles.hide : '')}
+        className={cn(
+          styles.voteButton,
+          isDownVoted() ? '' : isUpVoted() ? styles.hide : ''
+        )}
         onClick={() =>
           isAuthenticated()
             ? isDownVoted()
@@ -120,51 +128,76 @@ const PostVote = ({
             : handleComponentVisible(true, 'login')
         }
       >
-        <ArrowDown className={isDownVoted() ? styles.voted : exists() ? styles.hide : ''} />
+        <ArrowDown
+          className={isDownVoted() ? styles.voted : exists() ? styles.hide : ''}
+        />
       </Button>
-      {
-      isAuthenticated()?
-        report
-          ? <div className={!existsReport() ? styles.report : cn(styles.report,styles.hide)}>
-            <Button onClick={handlerShow}>
-              <Report />
-            </Button>
-            {
-              openReport
-                ? <div className={styles.modelReport} onClick={handlerReport}>
+      {isAuthenticated() ? (
+        id !== authState?.userInfo.id ? (
+          report ? (
+            <div
+              className={
+                !existsReport() ? styles.report : cn(styles.report, styles.hide)
+              }
+            >
+              <Button onClick={handlerShow}>
+                <Report />
+              </Button>
+              {openReport ? (
+                <div className={styles.modelReport} onClick={handlerReport}>
                   Báo cáo câu hỏi
                 </div>
-                : ''
-            }
-          </div>
-          : ''
-          :''
-      }
-      {
-        isAuthenticated()
-          ?
-          id === authState.userInfo.id
-            ? check
-              ? checkAnswer
-                ? <Button className={cn(styles.voteButton, styles.situation, styles.checkBtn)}>
+              ) : (
+                ''
+              )}
+            </div>
+          ) : (
+            ''
+          )
+        ) : (
+          ''
+        )
+      ) : (
+        ''
+      )}
+      {isAuthenticated() ? (
+        id === authState?.userInfo.id ? (
+          voteUser ? (
+            check ? (
+              checkAnswer ? (
+                <Button
+                  className={cn(
+                    styles.voteButton,
+                    styles.situation,
+                    styles.checkBtn
+                  )}
+                >
                   <CheckIcon className={styles.checkVote} />
                 </Button>
-                : ''
-              : <Button className={cn(styles.voteButton, styles.situation)}
+              ) : (
+                ''
+              )
+            ) : (
+              <Button
+                className={cn(styles.voteButton, styles.situation)}
                 onClick={() => {
-                  isAuthenticated() ?
-                    checkVote()
+                  isAuthenticated()
+                    ? checkVote()
                     : handleComponentVisible(true, 'login')
                 }}
               >
                 <CheckIcon className={styles.vote} />
               </Button>
-            : ''
-          : ''
-
-      }
-
-
+            )
+          ) : (
+            ''
+          )
+        ) : (
+          ''
+        )
+      ) : (
+        ''
+      )}
     </div>
   )
 }

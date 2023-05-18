@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const Question = require('../models/question');
 const jwtDecode = require('jwt-decode');
-const nodeMailer = require("nodemailer");
+const nodeMailer = require('nodemailer');
 const { body, validationResult } = require('express-validator');
 
 const { createToken, hashPassword, verifyPassword } = require('../utils/authentication');
@@ -9,7 +9,7 @@ const fullTextSearch = require('fulltextsearch');
 var fullTextSearchVi = fullTextSearch.vi;
 
 const getPagination = (page, size, data) => {
-  const start = page ? + (page - 1) * size : 0;
+  const start = page ? +(page - 1) * size : 0;
   const end = size ? page * size : 10;
   const dataInPer = data.slice(start, end);
   const pagePer = Math.ceil(data.length / size);
@@ -17,9 +17,9 @@ const getPagination = (page, size, data) => {
 };
 exports.sendMail = (req, res) => {
   //guesswhoisthis111222@gmail.com
-  const adminEmail = "dinhhaiduongsoma@gmail.com";
-  const adminPassword = "sotuxeeusstaossp";
-  const mailHost = "smtp.gmail.com";
+  const adminEmail = 'dinhhaiduongsoma@gmail.com';
+  const adminPassword = 'sotuxeeusstaossp';
+  const mailHost = 'smtp.gmail.com';
   const { email, subject, htmlContent } = req.body;
 
   const mailPort = 25;
@@ -30,33 +30,31 @@ exports.sendMail = (req, res) => {
     secure: false,
     auth: {
       user: adminEmail,
-      pass: adminPassword,
+      pass: adminPassword
     },
     tls: {
       rejectUnauthorized: false
     }
-
   });
 
   const options = {
     from: adminEmail,
     to: email,
     subject: subject,
-    html: htmlContent,
+    html: htmlContent
   };
-  console.log(options)
+  console.log(options);
 
   transporter.sendMail(options, function (err, data) {
     if (err) {
-      console.log(err)
+      console.log(err);
     } else {
       res.send({
-        message: "Mã đã được gửi vui lòng vào mail để xác nhận",
+        message: 'Mã đã được gửi vui lòng vào mail để xác nhận'
       });
-      console.log("mail has sent")
+      console.log('mail has sent');
     }
-
-  })
+  });
   /*  return transporter.sendMail(options); */
 };
 exports.signup = async (req, res) => {
@@ -68,12 +66,12 @@ exports.signup = async (req, res) => {
   }
 
   try {
-    const { username,email,role } = req.body;
+    const { username, email, role } = req.body;
     const userData = {
       email: email,
-         username: username.toLowerCase(),
-        password: '',
-        role:role
+      username: username.toLowerCase(),
+      password: '',
+      role: role
     };
 
     const existingUsername = await User.findOne({
@@ -90,7 +88,6 @@ exports.signup = async (req, res) => {
         email: req.body.email
       });
       if (existingEmail) {
-        console.log(1)
         return res.status(400).json({
           message: 'Email đã tồn tại.'
         });
@@ -98,8 +95,7 @@ exports.signup = async (req, res) => {
         userData.email = req.body.email;
       }
     }
-   
-  
+
     if (req.body.password) {
       const hashedPassword = await hashPassword(req.body.password);
       userData.password = hashedPassword;
@@ -186,7 +182,7 @@ exports.authenticate = async (req, res) => {
     const user = await User.findOne({
       username: username.toLowerCase()
     });
-    if(user.ban){
+    if (user.ban) {
       return res.status(403).json({
         message: 'Tài khoản đã bị khoá.'
       });
@@ -203,8 +199,8 @@ exports.authenticate = async (req, res) => {
       const token = createToken(user);
       const decodedToken = jwtDecode(token);
       const expiresAt = decodedToken.exp;
-      const { username, role, id, created, profilePhoto,ban } = user;
-      const userInfo = { username, role, id, created, profilePhoto,ban };
+      const { username, role, id, created, profilePhoto, ban } = user;
+      const userInfo = { username, role, id, created, profilePhoto, ban };
 
       res.json({
         message: 'Authentication successful!',
@@ -225,13 +221,12 @@ exports.authenticate = async (req, res) => {
 };
 
 exports.listUsers = async (req, res, next) => {
- 
   try {
-   /*  const { sortType = '-created' } = req.body; */
-   const { page, size ,sortType = '-created'} = req.query;
+    /*  const { sortType = '-created' } = req.body; */
+    const { page, size, sortType = '-created' } = req.query;
     const users = await User.find().sort(sortType);
-   
-    console.log(sortType)
+
+    console.log(sortType);
     const { dataInPer, pagePer } = getPagination(page, size, users);
     res.json({
       currentPage: Number(page),
@@ -244,9 +239,7 @@ exports.listUsers = async (req, res, next) => {
 };
 
 exports.search = async (req, res, next) => {
-  
   try {
-   
     const users = await User.find({ username: { $regex: req.params.search, $options: 'i' } });
     const { page, size } = req.query;
     const { dataInPer, pagePer } = getPagination(page, size, users);
@@ -266,8 +259,7 @@ exports.find = async (req, res, next) => {
     if (username) {
       const users = await User.findOne({ username: username });
       res.json(users);
-
-    }else if (email) {
+    } else if (email) {
       const users = await User.findOne({ email: email });
 
       /*   const {email, username, role, _id, created, profilePhoto } = users;   */
@@ -283,7 +275,6 @@ exports.find = async (req, res, next) => {
 
       res.json({ userInfo });
     }
-
   } catch (error) {
     next(error);
   }
@@ -293,10 +284,10 @@ exports.upDatePassword = async (req, res, next) => {
     const { id, newPassword } = req.body;
     const hashedPassword = await hashPassword(newPassword);
 
-    console.log(hashedPassword)
-    const user = await User.findByIdAndUpdate(id, { password: hashedPassword }, { upsert: true })
+    console.log(hashedPassword);
+    const user = await User.findByIdAndUpdate(id, { password: hashedPassword }, { upsert: true });
 
-    console.log(user)
+    console.log(user);
     if (user) {
       const token = createToken(user);
       const decodedToken = jwtDecode(token);
@@ -323,10 +314,6 @@ exports.upDatePassword = async (req, res, next) => {
         message: 'There was a problem updating your account.'
       });
     }
-
-
-
-
   } catch (error) {
     next(error);
   }
@@ -365,8 +352,8 @@ exports.editUser = async (req, res, next) => {
   try {
     let user = await User.findOne({ username: req.params.username });
     user.role = req.body.role;
-      user.email = req.body.email;   
-      user.ban = req.body.ban;   
+    user.email = req.body.email;
+    user.ban = req.body.ban;
     await user.save();
     res.json(user);
   } catch (error) {
@@ -377,14 +364,14 @@ exports.editUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
   try {
     const user = await User.findOne({ username: req.params.username });
-    
+
     const questions = await Question.find({ author: user._id });
-   
-    for(let i = 0 ;i < questions.length  ; i++){
+
+    for (let i = 0; i < questions.length; i++) {
       await questions[i].remove();
     }
-     
-     await User.deleteOne({ _id: user._id }); 
+
+    await User.deleteOne({ _id: user._id });
     res.json('Delete User Successfully');
   } catch (error) {
     next(error);
@@ -401,7 +388,7 @@ exports.getUsersOfCurrentPage = async (req, res) => {
       const search = req.query.search;
       filterUsername.username = new RegExp(fullTextSearchVi(search), 'i');
       filterEmail.email = new RegExp(fullTextSearchVi(search), 'i');
-    } 
+    }
     var users = await User.find({ $or: [filterUsername, filterEmail] });
     const total = users.length;
     // while(Math.ceil(total / PAGE_SIZE)<=page){

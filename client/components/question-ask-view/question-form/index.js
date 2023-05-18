@@ -85,7 +85,7 @@ const selectedTags = (tags) => {
           .max(150, 'Title cannot be longer than 150 characters.')
           .min(15, 'Chủ đề phải lớn hơn 15 ký tự.'),
           text: Yup.string()
-          .required("Chủ đề còn trống")        
+          .required("Nội dung còn trống")        
             .max(500, 'Title cannot be longer than 150 characters.')
             .min(30, 'Chủ đề phải lớn hơn 30 ký tự.'),
   

@@ -12,48 +12,48 @@ import Button from '../../button'
 import styles from './signup-form.module.css'
 
 const VerificationForm = () => {
-  const { setAuthState,info} = useContext(AuthContext)
-  const {userInfo} = info;
- 
+  const { setAuthState, info } = useContext(AuthContext)
+
   const { setIsComponentVisible } = useContext(ModalContext)
-  
+
   const [loading, setLoading] = useState(false)
-  
+
   return (
     <Formik
-      initialValues={{email: userInfo ? userInfo.email : '' , newPassword: '',  passwordConfirmation: '' }}
+      initialValues={{
+        email: info?.userInfo ? info?.userInfo.email : '',
+        newPassword: '',
+        passwordConfirmation: ''
+      }}
       onSubmit={async (values, { setStatus, resetForm }) => {
         setLoading(true)
         try {
           console.log(values.newPassword)
           var request = {
-           
-              id : userInfo.id,
-              newPassword:values.newPassword
-            
+            id: info?.userInfo.id,
+            newPassword: values.newPassword
           }
-        
+
           const user = await publicFetch.put('user/upDatePass', request)
-          if(user){
-            const {data} = user;
+          if (user) {
+            const { data } = user
             const { token, expiresAt, userInfo } = data
             setAuthState({ token, expiresAt, userInfo })
             resetForm({})
             setIsComponentVisible(false)
           }
-      
         } catch (error) {
           setStatus(error.response.data.message)
         }
         setLoading(false)
       }}
       validationSchema={Yup.object({
-        email:Yup.string()
-        .required('Required')
-        .matches(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        ),
-      
+        email: Yup.string()
+          .required('Required')
+          .matches(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          ),
+
         newPassword: Yup.string()
           .required('Required')
           .min(6, 'Must be at least 6 characters long')
@@ -83,8 +83,7 @@ const VerificationForm = () => {
             value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
-           disabled
-            
+            disabled
           />
           <FormInput
             label="NewPassword"
@@ -97,7 +96,7 @@ const VerificationForm = () => {
             hasError={touched.newPassword && errors.newPassword}
             errorMessage={errors.newPassword && errors.newPassword}
           />
-         
+
           <FormInput
             label="Password Confirm"
             type="password"

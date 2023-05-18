@@ -21,7 +21,7 @@ const UserDetail = ({ username }) => {
     }
     fetchQuestions()
   }, [postType, username])
-
+    
   return (
     <Layout extra={false}>
       <Head>
@@ -37,13 +37,14 @@ const UserDetail = ({ username }) => {
             </div>
           )}
 
-          {posts?.map(({ id, title, score, created }) => (
+          {posts?.map(({ id, title, score, created,_status }) => (
             <PostItem
               key={id}
               title={title}
               vote={score}
               created={created}
               id={id}
+              _status={_status}
             />
           ))}
 

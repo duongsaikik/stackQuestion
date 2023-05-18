@@ -15,8 +15,8 @@ const CommentList = ({
   author,
   editTime
 }) => {
-  const router = useRouter();
-  const { isAuthenticated,authState } = useContext(AuthContext)
+  const router = useRouter()
+  const { isAuthenticated, authState } = useContext(AuthContext)
   const { handleComponentVisible } = useContext(ModalContext)
 
   const [showAddComment, setShowAddComment] = useState(false)
@@ -32,8 +32,7 @@ const CommentList = ({
     setDiffrence(children.length - visibleComments.length)
   }, [visibleComments])
 
-
-  const handlerEdit = () =>{
+  const handlerEdit = () => {
     setShowEdit(true)
     router.push(`/questions/edit?id=${questionId}`)
   }
@@ -48,36 +47,35 @@ const CommentList = ({
         >
           show <b>{difference}</b> more comments
         </a>
-      ) : (
-        !showAddComment || !showEdit ?
-          <>
+      ) : !showAddComment || !showEdit ? (
+        <>
+          <a
+            className={styles.addComment}
+            onClick={() =>
+              isAuthenticated()
+                ? setShowAddComment(true)
+                : handleComponentVisible(true, 'signup')
+            }
+          >
+            Thêm bình luận
+          </a>
+          {authState?.userInfo?.id === author && editTime < 1 ? (
             <a
               className={styles.addComment}
-              onClick={() => isAuthenticated() ? setShowAddComment(true) : handleComponentVisible(true, 'signup')}
-            >
-              Thêm bình luận
-            </a>
-            {
-              authState.userInfo?.id === author && editTime < 1
-              ?   <a
-              className={styles.addComment}
-              onClick={() => 
-                isAuthenticated() 
-                ? handlerEdit()                            
-                : handleComponentVisible(true, 'signup')}
+              onClick={() =>
+                isAuthenticated()
+                  ? handlerEdit()
+                  : handleComponentVisible(true, 'signup')
+              }
             >
               Chỉnh sửa
             </a>
-            : ''
-            }
-          
-          </>
-
-          : ''
-
-
-
-
+          ) : (
+            ''
+          )}
+        </>
+      ) : (
+        ''
       )}
 
       {showAddComment && (

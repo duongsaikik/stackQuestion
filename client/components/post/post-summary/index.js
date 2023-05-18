@@ -23,9 +23,9 @@ const PostSummary = ({
   const { authState, isAdmin } = useContext(AuthContext)
   const { authAxios } = useContext(FetchContext)
   const router = useRouter()
-
+  console.log(authState, author)
   const handleDeleteComment = async () => {
-    const res = window.confirm('Are you sure delete your post?')
+    const res = window.confirm('Bạn có chắc là muốn xoá bài viết này không?')
     if (res) {
       const { data } = await authAxios.delete(
         answerId
@@ -44,7 +44,10 @@ const PostSummary = ({
 
   return (
     <div className={styles.postCell}>
-      <div className={styles.text} dangerouslySetInnerHTML={{ __html: children}}></div>
+      <div
+        className={styles.text}
+        dangerouslySetInnerHTML={{ __html: children }}
+      ></div>
       <div className={styles.footer}>
         <div className={styles.row}>
           <div className={styles.tagContainer}>
@@ -53,11 +56,11 @@ const PostSummary = ({
             ))}
           </div>
           <div className={styles.userDetails}>
-            <Link href="/users/[user]" as={`/users/${author.username}`}>
+            <Link href="/users/[user]" as={`/users/${author?.username}`}>
               <a>
                 <img
-                  src={`https://secure.gravatar.com/avatar/${author.id}?s=32&d=identicon`}
-                  alt={author.username}
+                  src={`https://secure.gravatar.com/avatar/${author?.id}?s=32&d=identicon`}
+                  alt={author?.username}
                 />
               </a>
             </Link>
@@ -68,19 +71,26 @@ const PostSummary = ({
                   addSuffix: true
                 })}
               </span>
-              <Link href="/users/[user]" as={`/users/${author.username}`}>
-                <a>{author.username} {editTime === 1 ? "(đã chỉnh sửa)": ''}</a>
+              <Link href="/users/[user]" as={`/users/${author?.username}`}>
+                <a>
+                  {author?.username} {editTime === 1 ? '(đã chỉnh sửa)' : ''}
+                </a>
               </Link>
             </div>
           </div>
         </div>
-        {(authState.userInfo?.id === author.id || isAdmin()) && (
-          <div className={styles.row}>
-            <a className={styles.delete} onClick={() => handleDeleteComment()}>
-              Xoá
-            </a>
-          </div>
-        )}
+        {authState
+          ? (authState.userInfo?.id === author?.id || isAdmin()) && (
+              <div className={styles.row}>
+                <a
+                  className={styles.delete}
+                  onClick={() => handleDeleteComment()}
+                >
+                  Xoá
+                </a>
+              </div>
+            )
+          : ''}
       </div>
     </div>
   )

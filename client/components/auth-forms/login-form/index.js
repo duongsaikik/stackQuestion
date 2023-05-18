@@ -14,7 +14,7 @@ import styles from './login-form.module.css'
 const LoginForm = () => {
   const { setAuthState } = useContext(AuthContext)
   const { setIsComponentVisible } = useContext(ModalContext)
-   
+
   const [loading, setLoading] = useState(false)
 
   return (
@@ -24,25 +24,22 @@ const LoginForm = () => {
         setLoading(true)
         try {
           const { data } = await publicFetch.post('authenticate', values)
-        
+
           const { token, expiresAt, userInfo } = data
-          if(userInfo.role === 'user'){
+          if (userInfo.role === 'user') {
             setAuthState({ token, expiresAt, userInfo })
             resetForm({})
             setIsComponentVisible(false)
-          }else{
-            setStatus("Tài khoản không tồn tại")
-          }        
+          } else {
+            setStatus('Tài khoản không tồn tại')
+          }
         } catch (error) {
           setStatus(error.response.data.message)
         }
         setLoading(false)
       }}
       validationSchema={Yup.object({
-        username: Yup.string()
-          .required('Required')
-          .max(16, 'Must be at most 16 characters long')
-          .matches(/^[a-zA-Z0-9_-]+$/, 'Contains invalid characters'),
+
         password: Yup.string()
           .required('Required')
           .min(6, 'Must be at least 6 characters long')

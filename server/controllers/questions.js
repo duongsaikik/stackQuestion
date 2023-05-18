@@ -47,9 +47,9 @@ exports.createQuestion = async (req, res, next) => {
     });
     console.log(author)
      //decrease answers mount
-    /*  const user = await User.findByIdAndUpdate(
+      const user = await User.findByIdAndUpdate(
       author, { $inc: { questionsMount: 1, score: initialScore } },
-  ); */
+  ); 
     res.status(201).json(question);
   } catch (error) {
     next(error);
@@ -204,11 +204,14 @@ exports.getUserReportById = async (req,res,next) =>{
 }
 exports.removeQuestion = async (req, res, next) => {
   try {
+   
     await req.question.remove();
      //increase answers mount
+    
      await User.findByIdAndUpdate(
       req.user.id, { $inc: { questionsMount: -1} },
   );
+  console.log(req.user.id)
     res.json({ message: 'Your question successfully deleted.' });
   
   } catch (error) {

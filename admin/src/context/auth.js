@@ -38,17 +38,17 @@ const AuthProvider = ({ children }) => {
   }
 
   const isAuthenticated = () => {
-    if (!authState.token || !authState.expiresAt) {
+    if (!authState?.token || !authState?.expiresAt) {
       return false
     }
     return new Date().getTime() / 1000 < authState.expiresAt
   }
 
   const isAdmin = () => {
-    return authState.userInfo?.role === 'admin'
+    return authState?.userInfo?.role === 'admin'
   }
   const isChecker = () => {
-    return authState.userInfo?.role === 'checker'
+    return authState?.userInfo?.role === 'checker'
   }
 
   return (

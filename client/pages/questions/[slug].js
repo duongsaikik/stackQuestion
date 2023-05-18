@@ -17,18 +17,15 @@ import { Spinner } from '../../components/icons'
 
 const QuestionDetail = ({ questionId, title }) => {
   const [question, setQuestion] = useState(null)
-  const [idOwner,setIdOwner] = useState(null);
+  const [idOwner, setIdOwner] = useState(null)
   const [answerSortType, setAnswersSortType] = useState('Votes')
 
   useEffect(() => {
     const fetchQuestion = async () => {
       const { data } = await publicFetch.get(`/question/${questionId}`)
-      setQuestion(data);
-      setIdOwner(data.author.id);
+      setQuestion(data)
+      setIdOwner(data.author.id)
       console.log(data)
-
-     
-    
     }
     fetchQuestion()
   }, [])
@@ -63,7 +60,7 @@ const QuestionDetail = ({ questionId, title }) => {
             <Spinner />
           </div>
         )}
- 
+
         {question && (
           <>
             <PostWrapper borderBottom={false}>
@@ -73,6 +70,7 @@ const QuestionDetail = ({ questionId, title }) => {
                 questionId={questionId}
                 setQuestion={setQuestion}
                 report={question.report}
+                id={idOwner}
               />
               <PostSummary
                 tags={question.tags}
@@ -83,9 +81,13 @@ const QuestionDetail = ({ questionId, title }) => {
               >
                 {question.text}
               </PostSummary>
-              <CommentList questionId={questionId} editTime={question.editTime} author={idOwner} setQuestion={setQuestion}>
+              <CommentList
+                questionId={questionId}
+                editTime={question.editTime}
+                author={idOwner}
+                setQuestion={setQuestion}
+              >
                 {question.comments.map(({ id, author, created, body }) => (
-                  
                   <CommentItem
                     key={id}
                     commentId={id}
@@ -94,7 +96,6 @@ const QuestionDetail = ({ questionId, title }) => {
                     isOwner={author.username === question.author.username}
                     created={created}
                     setQuestion={setQuestion}
-                    
                   >
                     {body}
                   </CommentItem>
@@ -115,10 +116,11 @@ const QuestionDetail = ({ questionId, title }) => {
                       votes={answer.votes}
                       answerId={answer.id}
                       questionId={questionId}
-                      setQuestion={setQuestion}                   
+                      setQuestion={setQuestion}
                       checkAnswer={answer.check}
                       check={question.check}
                       id={idOwner}
+                      voteUser={true}
                     />
                     <PostSummary
                       author={answer.author}
@@ -144,7 +146,6 @@ const QuestionDetail = ({ questionId, title }) => {
                           isOwner={author.username === question.author.username}
                           created={created}
                           setQuestion={setQuestion}
-                     
                         >
                           {body}
                         </CommentItem>
@@ -168,7 +169,6 @@ const QuestionDetail = ({ questionId, title }) => {
 }
 
 export async function getServerSideProps(context) {
-  
   const slug = context.params.slug
   const questionId = slug.split('-').shift()
   const title = slug
